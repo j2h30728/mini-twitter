@@ -8,4 +8,37 @@ generator client {
 datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
+  relationMode = "prisma"
 }
+
+model User {
+  id Int @id @default(autoincrement())
+  email String @unique
+  name String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  teet Tweet[]
+  likes Like[]
+}
+
+model Tweet {
+  id Int @id @default(autoincrement())
+  text String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  likes Like[]
+  user User @relation(fields: [userId],references: [id], onDelete:Cascade)
+  userId Int
+  @@index([userId])
+}
+model Like {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId],references: [id], onDelete:Cascade)
+  userId Int
+  tweet Tweet @relation(fields: [tweetId],references: [id], onDelete:Cascade)
+  tweetId Int
+  
+  @@index([userId])
+  @@index([tweetId])
+  }

@@ -17,7 +17,6 @@
     "autoprefixer": "10.4.7",
     "next": "12.1.6",
     "postcss": "8.4.14",
-    "prisma": "3.15.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "7.32.2",
@@ -28,5 +27,8 @@
   },
   "license": "ISC",
   "keywords": [],
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "prisma": "^4.12.0"
+  }
 }

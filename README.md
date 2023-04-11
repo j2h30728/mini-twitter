@@ -1,42 +1,31 @@
-# Hello World example
+# mini-Twitter
 
-## How to use
+- NextJS, Prisma, Tailwind, API Routes 그리고 SWR 를 활용하여 아래 페이지를 완성합니다.
+- `/` : 로그인 여부를 확인하여 로그인이 되어있다면 홈페이지를 그렇지 않다면 계정 생성 / 로그인 페이지로 이동하세요.
+- `/create-account` : 계정을 생성하는 페이지입니다.
+- `/log-in` : 로그인을 진행하는 페이지입니다.
+- `/tweet/[id]` : 트윗의 상세 정보를 보는 페이지 입니다.
 
-### Using `create-next-app`
+### `/`:
 
-Execute [`create-next-app`](https://github.com/segmentio/create-next-app) with [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) or [npx](https://github.com/zkat/npx#readme) to bootstrap the example:
+- After logging in, in the Home Page, the user should see all the Tweets on the database, the user should also be able to POST a Tweet.
+- 로그인이 완료되었을 경우, 사용자는 데이터베이스에 존재하는 모든 트윗을 볼 수 있어야 합니다.
+- 또한 트윗을 작성할 수 있어야 합니다.
 
-```bash
-npx create-next-app --example hello-world hello-world-app
-# or
-yarn create next-app --example hello-world hello-world-app
-```
+### `/tweet/[id]`:
 
-### Download manually
+- The user should be able to see the tweet + a Like button.
+- When the Like button is pressed, save the like on the database and reflect the update using mutate from useSWR.
+- 사용자는 id에 해당하는 트윗의 내용과 좋아요 버튼을 볼 수 있어야 합니다.
+- 좋아요버튼을 클릭했 을 경우 좋아요의 상태값이 데이터베이스에 저장되어야 하며 useSWR의 mutate를 사용하여 업데이트를 반영해야 합니다.
 
-Download the example:
+### 참고사항
 
-```bash
-curl https://codeload.github.com/zeit/next.js/tar.gz/canary | tar -xz --strip=2 next.js-canary/examples/hello-world
-cd hello-world
-```
+챌린지 blueprint에는 SQLite을 기반으로 한 Prisma가 설정되어있습니다.
+prisma.schema파일을 변경했다면 npm run db-sync를 실행하세요.
+SWR와 tailwind도 챌린지 blueprint에 설정되어 있습니다.
 
-Install it and run:
+### 환경설정
 
-```bash
-npm install
-npm run dev
-# or
-yarn
-yarn dev
-```
-
-Deploy it to the cloud with [now](https://zeit.co/now) ([download](https://zeit.co/download))
-
-```bash
-now
-```
-
-## The idea behind the example
-
-This example shows the most basic idea behind Next. We have 2 pages: `pages/index.js` and `pages/about.js`. The former responds to `/` requests and the latter to `/about`. Using `next/link` you can add hyperlinks between them with universal routing capabilities. The `day` directory shows that you can have subdirectories.
+- 코딩 챌린지를 완료한 후. https://codesandbox.io/dashboard 으로 이동하여.
+- 'Create Sandbox' > Import Project 한 후에 프로젝트의 깃헙 URL 을 복사. 붙여넣기 하면 됩니다
