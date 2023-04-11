@@ -8,13 +8,13 @@ generator client {
 datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
-  relationMode = "prisma"
 }
 
 model User {
   id Int @id @default(autoincrement())
   email String @unique
   name String
+  password String 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   teet Tweet[]

@@ -1,5 +1,9 @@
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import useMutation from "../lib/client/useMutation";
+import { useEffect } from "react";
+import { ResponseType } from "../lib/server/withHandler";
+import { useRouter } from "next/router";
 
 interface AccountForm {
   name: string;
@@ -7,13 +11,28 @@ interface AccountForm {
   password: string;
 }
 export default function login() {
+  const router = useRouter();
   const { register, handleSubmit, reset } = useForm<AccountForm>();
+  const [mutation, { loading, data, error }] =
+    useMutation<ResponseType>("/api/users/login");
 
   const onValid = (valiform: AccountForm) => {
     console.log(valiform);
+    if (loading) return;
+    mutation({ data: valiform, method: "POST" });
     reset();
   };
-
+  useEffect(() => {
+    console.log(data);
+    if (data) {
+      if (data.success) {
+        console.log(data);
+        router.replace("/tweet");
+      } else {
+        alert(data.message);
+      }
+    }
+  }, [data]);
   return (
     <>
       <h1>Login</h1>
