@@ -1,9 +1,10 @@
-import { Tweet } from "@prisma/client";
+import { Comment, Tweet } from "@prisma/client";
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 
 export interface ResponseType {
   success: boolean;
   tweets?: Tweet[];
+  comments?: Comment[];
   [key: string]: any;
 }
 

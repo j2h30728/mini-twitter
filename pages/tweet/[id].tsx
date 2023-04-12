@@ -1,32 +1,88 @@
 import useSWR from "swr";
 import { useRouter } from "next/router";
-import { Tweet } from "@prisma/client";
+import { Tweet, User } from "@prisma/client";
 import useMutation from "@/lib/client/useMutation";
 import { cls } from "@/lib/client/utils";
+import { useForm } from "react-hook-form";
+import { ResponseType } from "@/lib/server/withHandler";
+import { useEffect } from "react";
+import useUser from "@/lib/client/useUser";
 
 interface TweetDetailResponse {
-  tweet: Tweet;
+  tweet: {
+    id: number;
+    text: string;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: number;
+    user: User;
+  };
   success: boolean;
   isLiked: boolean;
 }
-
+interface CommetForm {
+  text: string;
+}
+interface Comment {
+  id: number;
+  text: string;
+  createdAt: Date;
+  userId: number;
+  tweetId: number;
+  user: User;
+  tweet: Tweet;
+}
+interface CommentsResponse extends ResponseType {
+  comments: Comment[];
+}
 export default function tweet() {
+  const { user } = useUser();
+  console.log(user?.id);
   const router = useRouter();
-  const { data: tweetDetail, mutate } = useSWR<TweetDetailResponse>(
+  const { data: tweetDetail, mutate: likeMutate } = useSWR<TweetDetailResponse>(
     router.query.id ? `/api/tweet/${router.query.id}` : null
   );
-  const [toggleLike] = useMutation(`/api/tweet/${router.query.id}/like`);
 
+  // like
+  const [toggleLike] = useMutation(`/api/tweet/${router.query.id}/like`);
+  //실제 좋아요 컨트롤 mutation 함수
   const onFavClick = () => {
     if (!tweetDetail) return;
-    mutate(prev => prev && { ...prev, isLiked: !prev.isLiked }, false);
-    toggleLike({ data: {}, method: "POST" });
+    likeMutate(prev => prev && { ...prev, isLiked: !prev.isLiked }, false); //optimistic UI
+    toggleLike({ data: {}, method: "POST" }); // 좋아요 버튼 제어
+  };
+
+  //comment - post
+  const { register, handleSubmit, reset } = useForm<CommetForm>();
+  const [mutationComment, { data: createComment, loading, error }] =
+    useMutation(`/api/tweet/${router.query.id}/comment`);
+
+  const onValid = (comment: CommetForm) => {
+    if (loading) return;
+    mutationComment({ data: comment, method: "POST" });
+    reset();
+  };
+
+  //comments - get
+  const { data: commentsRes, mutate: commentsMutate } =
+    useSWR<CommentsResponse>(
+      router.query.id ? `/api/tweet/${router.query.id}/comment` : null
+    );
+
+  useEffect(() => {
+    commentsMutate();
+  }, [createComment, commentsRes]);
+
+  //comment -delete
+  const handleRemoveComment = (id: number) => {
+    if (loading) return;
+    mutationComment({ configHeader: { id }, method: "DELETE" });
   };
 
   return (
     <>
       <div>{tweetDetail?.tweet.text}</div>
-      <div>{tweetDetail?.isLiked ? "like" : "unlike"}</div>
+      <div>{tweetDetail?.tweet.user.name}</div>
       <button
         onClick={onFavClick}
         className={cls(
@@ -63,6 +119,28 @@ export default function tweet() {
           </svg>
         )}
       </button>
+      <div>
+        {commentsRes?.success &&
+          commentsRes?.comments?.map(comment => (
+            <div key={comment.id}>
+              <span>{comment.user?.name} | </span>
+              <span>{comment.text} | </span>
+              <span>{comment.createdAt.toString().substring(0, 10)}</span>
+              {user?.id === comment.userId ? (
+                <button onClick={() => handleRemoveComment(comment.id)}>
+                  삭제
+                </button>
+              ) : null}
+            </div>
+          ))}
+      </div>
+      <div>
+        <form onSubmit={handleSubmit(onValid)}>
+          <label>코멘트</label>
+          <input {...register("text")} />
+          <button>제출</button>
+        </form>
+      </div>
     </>
   );
 }

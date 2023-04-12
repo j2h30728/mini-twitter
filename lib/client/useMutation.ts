@@ -15,6 +15,7 @@ type UseMutationResult<T> = [(data: any) => void, UseMutationState<T>];
 interface MutationRequest {
   data: any;
   method: method;
+  configHeader?: { [key: string]: string };
 }
 export default function useMutation<T>(url: string): UseMutationResult<T> {
   const [state, setState] = useState<UseMutationState<T>>({
@@ -23,19 +24,31 @@ export default function useMutation<T>(url: string): UseMutationResult<T> {
     error: undefined,
   });
 
-  async function mutation({ data = null, method }: MutationRequest) {
+  async function mutation({
+    data = null,
+    method,
+    configHeader,
+  }: MutationRequest) {
     const headers = new Headers({
       "Content-Type": "application/json",
+      ...configHeader,
     });
-
     try {
       setState(prev => ({ ...prev, loading: true }));
-      const response = await fetch(url, {
-        method: method,
-        body: JSON.stringify(data),
-        headers: headers, // 헤더 정보 전달
-      });
-      const resData = await response.json();
+      const response = await fetch(
+        url,
+        method !== "DELETE"
+          ? {
+              method: method,
+              body: JSON.stringify(data),
+              headers: headers, // 헤더 정보 전달
+            }
+          : {
+              method: "DELETE",
+              headers: headers, // 헤더 정보 전달
+            }
+      );
+      const resData = method !== "DELETE" ? await response.json() : null;
       setState(prev => ({ ...prev, data: resData, loading: false }));
     } catch (error) {
       setState(prev => ({ ...prev, error, loading: false }));

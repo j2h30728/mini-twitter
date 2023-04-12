@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import useMutation from "@/lib/client/useMutation";
 import useUser from "@/lib/client/useUser";
@@ -15,13 +15,15 @@ export default function Home() {
   const { register, handleSubmit } = useForm<Tweet>();
   const [mutation, { data: postingTweet, loading, error }] =
     useMutation("/api/tweet");
-  const { data: tweetsRes } = useSWR<ResponseType>("/api/tweet");
+  const { data: tweetsRes, mutate } = useSWR<ResponseType>("/api/tweet");
 
   const onValid = (tweetData: Tweet) => {
-    console.log(tweetData);
     if (loading) return;
     mutation({ data: tweetData, method: "POST" });
   };
+  useEffect(() => {
+    mutate();
+  }, [postingTweet]);
 
   return (
     <>

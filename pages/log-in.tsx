@@ -17,7 +17,6 @@ export default function login() {
     useMutation<ResponseType>("/api/users/login");
 
   const onValid = (valiform: AccountForm) => {
-    console.log(valiform);
     if (loading) return;
     mutation({ data: valiform, method: "POST" });
     reset();

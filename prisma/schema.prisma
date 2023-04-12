@@ -19,6 +19,7 @@ model User {
   updatedAt DateTime @updatedAt
   teet Tweet[]
   likes Like[]
+  comments Comment[]
 }
 
 model Tweet {
@@ -27,12 +28,27 @@ model Tweet {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   likes Like[]
+  comments Comment[]
   user User @relation(fields: [userId],references: [id], onDelete:Cascade)
   userId Int
   @@index([userId])
 }
 model Like {
   id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId],references: [id], onDelete:Cascade)
+  userId Int
+  tweet Tweet @relation(fields: [tweetId],references: [id], onDelete:Cascade)
+  tweetId Int
+  
+  @@index([userId])
+  @@index([tweetId])
+  }
+
+
+model Comment {
+  id Int @id @default(autoincrement())
+  text String
   createdAt DateTime @default(now())
   user User @relation(fields: [userId],references: [id], onDelete:Cascade)
   userId Int
