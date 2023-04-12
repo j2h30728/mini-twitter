@@ -15,7 +15,6 @@ type UseMutationResult<T> = [(data: any) => void, UseMutationState<T>];
 interface MutationRequest {
   data: any;
   method: method;
-  configHeader?: { [key: string]: string };
 }
 export default function useMutation<T>(url: string): UseMutationResult<T> {
   const [state, setState] = useState<UseMutationState<T>>({
@@ -24,14 +23,9 @@ export default function useMutation<T>(url: string): UseMutationResult<T> {
     error: undefined,
   });
 
-  async function mutation({
-    data = null,
-    method,
-    configHeader,
-  }: MutationRequest) {
+  async function mutation({ data = null, method }: MutationRequest) {
     const headers = new Headers({
       "Content-Type": "application/json",
-      ...configHeader, // configHeader에 추가적인 헤더 정보가 있다면 덮어씌움
     });
 
     try {

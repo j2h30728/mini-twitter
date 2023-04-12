@@ -1,5 +1,4 @@
 import { SWRConfig } from "swr";
-import Layout from "../components/Layout";
 import "../global.css";
 
 export default function App({ Component, pageProps }: any) {
@@ -8,9 +7,7 @@ export default function App({ Component, pageProps }: any) {
       value={{
         fetcher: (url: string) => fetch(url).then(response => response.json()),
       }}>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <Component {...pageProps} />
     </SWRConfig>
   );
 }

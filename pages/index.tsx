@@ -1,17 +1,43 @@
-import React from "react";
-
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import useMutation from "../lib/client/useMutation";
 import useUser from "../lib/client/useUser";
+import useSWR from "swr";
+import { ResponseType } from "../lib/server/withHandler";
+
+interface Tweet {
+  text: string;
+}
 
 export default function Home() {
-  const { data, isLoading } = useUser();
+  const { user, isLoading } = useUser();
+  const { register, handleSubmit } = useForm<Tweet>();
+  const [mutation, { data: postingTweet, loading, error }] =
+    useMutation("/api/tweet");
+  const { data: tweetsRes } = useSWR<ResponseType>("/api/tweet");
 
-  return !isLoading ? (
-    <div>
-      <h1>name : {data?.name}</h1>
-      <h1>email : {data?.email}</h1>
-      <h1>tweet : {data?.tweet}</h1>
-    </div>
-  ) : (
-    "Loading"
+  const onValid = (tweetData: Tweet) => {
+    console.log(tweetData);
+    if (isLoading) return;
+    mutation({ data: tweetData, method: "POST" });
+  };
+  useEffect(() => {
+    console.log(postingTweet);
+    console.log(tweetsRes);
+  }, [postingTweet, tweetsRes]);
+  return (
+    <>
+      <h1>HOME</h1>
+      <h2>{user?.name}</h2>
+      <form onSubmit={handleSubmit(onValid)}>
+        <input {...register("text")} placeholder="트윗을 작성해 주세요." />
+        <button>트윗하기</button>
+      </form>
+      <div>
+        {tweetsRes?.tweets?.map(tweet => (
+          <div key={tweet.id}>{tweet.text}</div>
+        ))}
+      </div>
+    </>
   );
 }

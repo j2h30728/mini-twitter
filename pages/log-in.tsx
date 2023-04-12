@@ -23,16 +23,14 @@ export default function login() {
     reset();
   };
   useEffect(() => {
-    console.log(data);
     if (data) {
       if (data.success) {
-        console.log(data);
-        router.replace("/tweet");
+        router.push("/");
       } else {
         alert(data.message);
       }
     }
-  }, [data]);
+  }, [data, router]);
   return (
     <>
       <h1>Login</h1>
