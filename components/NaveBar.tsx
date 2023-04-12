@@ -1,7 +1,7 @@
 import Link from "next/link";
-import useLogout from "../lib/client/useLogout";
+import useLogout from "@/lib/client/useLogout";
 import useSWR from "swr";
-import { ResponseType } from "../lib/server/withHandler";
+import { ResponseType } from "@/lib/server/withHandler";
 
 export default function NavBar() {
   const { data, error } = useSWR<ResponseType>("/api/users/me");

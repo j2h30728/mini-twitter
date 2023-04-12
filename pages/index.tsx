@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
-import useMutation from "../lib/client/useMutation";
-import useUser from "../lib/client/useUser";
+import useMutation from "@/lib/client/useMutation";
+import useUser from "@/lib/client/useUser";
 import useSWR from "swr";
-import { ResponseType } from "../lib/server/withHandler";
+import { ResponseType } from "@/lib/server/withHandler";
+import Link from "next/link";
 
 interface Tweet {
   text: string;
@@ -18,13 +19,10 @@ export default function Home() {
 
   const onValid = (tweetData: Tweet) => {
     console.log(tweetData);
-    if (isLoading) return;
+    if (loading) return;
     mutation({ data: tweetData, method: "POST" });
   };
-  useEffect(() => {
-    console.log(postingTweet);
-    console.log(tweetsRes);
-  }, [postingTweet, tweetsRes]);
+
   return (
     <>
       <h1>HOME</h1>
@@ -35,7 +33,9 @@ export default function Home() {
       </form>
       <div>
         {tweetsRes?.tweets?.map(tweet => (
-          <div key={tweet.id}>{tweet.text}</div>
+          <div key={tweet.id}>
+            <Link href={`/tweet/${tweet.id}`}>{tweet.text}</Link>
+          </div>
         ))}
       </div>
     </>

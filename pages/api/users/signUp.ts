@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import db from "../../../lib/server/db";
-import withHandler, { ResponseType } from "../../../lib/server/withHandler";
+import db from "@/lib/server/db";
+import withHandler, { ResponseType } from "@/lib/server/withHandler";
 
 async function handler(
   req: NextApiRequest,

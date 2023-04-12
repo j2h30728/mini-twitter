@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import useMutation from "../lib/client/useMutation";
+import useMutation from "@/lib/client/useMutation";
 import { useEffect } from "react";
-import { ResponseType } from "../lib/server/withHandler";
+import { ResponseType } from "@/lib/server/withHandler";
 import { useRouter } from "next/router";
 
 interface AccountForm {
