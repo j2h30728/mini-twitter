@@ -3,11 +3,19 @@ import { useForm } from "react-hook-form";
 import useMutation from "@/lib/client/useMutation";
 import useUser from "@/lib/client/useUser";
 import useSWR from "swr";
-import { ResponseType } from "@/lib/server/withHandler";
 import Link from "next/link";
+import { Tweet, User } from "@prisma/client";
 
-interface Tweet {
-  text: string;
+interface TweetWithCount extends Tweet {
+  _count: {
+    comments: number;
+    likes: number;
+  };
+  user: User;
+}
+interface TweetRes {
+  success: boolean;
+  tweets: TweetWithCount[];
 }
 
 export default function Home() {
@@ -15,7 +23,7 @@ export default function Home() {
   const { register, handleSubmit } = useForm<Tweet>();
   const [mutation, { data: postingTweet, loading, error }] =
     useMutation("/api/tweet");
-  const { data: tweetsRes, mutate } = useSWR<ResponseType>("/api/tweet");
+  const { data: tweetsRes, mutate } = useSWR<TweetRes>("/api/tweet");
 
   const onValid = (tweetData: Tweet) => {
     if (loading) return;
@@ -24,7 +32,7 @@ export default function Home() {
   useEffect(() => {
     mutate();
   }, [postingTweet]);
-
+  console.log(tweetsRes);
   return (
     <>
       <h1>HOME</h1>
@@ -36,7 +44,10 @@ export default function Home() {
       <div>
         {tweetsRes?.tweets?.map(tweet => (
           <div key={tweet.id}>
-            <Link href={`/tweet/${tweet.id}`}>{tweet.text}</Link>
+            <span>{tweet.user.name}</span>
+            <Link href={`/tweet/${tweet.id}`}>| {tweet.text}</Link>
+            <span>| 코멘트 : {tweet._count.comments}</span>
+            <span>| 좋아요 : {tweet._count.likes}</span>
           </div>
         ))}
       </div>
