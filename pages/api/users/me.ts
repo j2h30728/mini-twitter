@@ -12,6 +12,8 @@ async function handler(
       id: req.session.user?.id,
     },
   });
+  if (!profile)
+    return res.json({ success: false, message: "로그인이 필요합니다." });
   return res.status(200).json({ success: true, profile });
 }
 

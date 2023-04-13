@@ -4,7 +4,6 @@ import withHandler from "@/lib/server/withHandler";
 import { withApiSession } from "@/lib/server/withSession";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log(req.method);
   if (req.method === "GET") {
     const {
       query: { id },
@@ -58,13 +57,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(201).json({ success: true, comment });
   }
   if (req.method === "DELETE") {
-    console.log("test");
     const {
       query: { id },
       session: { user },
       headers,
     } = req;
-    console.log("헤더", headers.id);
     const existComment = await db.comment.findFirst({
       where: {
         id: Number(headers.id),
@@ -72,7 +69,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         userId: user?.id,
       },
     });
-    console.log("존재하는 코멘트", existComment);
     if (!existComment)
       return res
         .status(404)

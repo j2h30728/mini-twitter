@@ -37,14 +37,13 @@ interface CommentsResponse extends ResponseType {
 }
 export default function tweet() {
   const { user } = useUser();
-  console.log(user?.id);
   const router = useRouter();
   const { data: tweetDetail, mutate: likeMutate } = useSWR<TweetDetailResponse>(
-    router.query.id ? `/api/tweet/${router.query.id}` : null
+    router.query.id ? `/api/tweets/${router.query.id}` : null
   );
 
   // like
-  const [toggleLike] = useMutation(`/api/tweet/${router.query.id}/like`);
+  const [toggleLike] = useMutation(`/api/tweets/${router.query.id}/like`);
   //실제 좋아요 컨트롤 mutation 함수
   const onFavClick = () => {
     if (!tweetDetail) return;
@@ -55,7 +54,7 @@ export default function tweet() {
   //comment - post
   const { register, handleSubmit, reset } = useForm<CommetForm>();
   const [mutationComment, { data: createComment, loading, error }] =
-    useMutation(`/api/tweet/${router.query.id}/comment`);
+    useMutation(`/api/tweets/${router.query.id}/comment`);
 
   const onValid = (comment: CommetForm) => {
     if (loading) return;
@@ -66,7 +65,7 @@ export default function tweet() {
   //comments - get
   const { data: commentsRes, mutate: commentsMutate } =
     useSWR<CommentsResponse>(
-      router.query.id ? `/api/tweet/${router.query.id}/comment` : null
+      router.query.id ? `/api/tweets/${router.query.id}/comment` : null
     );
 
   useEffect(() => {
