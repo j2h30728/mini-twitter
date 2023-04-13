@@ -3,20 +3,13 @@ import useLogout from "@/lib/client/useLogout";
 import useSWR from "swr";
 import { ResponseType } from "@/lib/server/withHandler";
 import { useEffect } from "react";
-import { useRouter } from "next/router";
 
 export default function NavBar() {
   const { data, error, mutate } = useSWR<ResponseType>("/api/users/me");
-  const router = useRouter();
   const handleLogout = useLogout();
   console.log(data, error);
   useEffect(() => {
     mutate();
-    if (data?.success) {
-      router.replace("/");
-    } else {
-      router.replace("/log-in");
-    }
   }, [data]);
   return (
     <div>
