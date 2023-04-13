@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Tweet, User } from "@prisma/client";
 import { NextPage } from "next";
 import db from "../lib/server/db";
+import useUser from "@/lib/client/useUser";
 
 interface TweetWithCount extends Tweet {
   _count: {
@@ -24,6 +25,9 @@ const Home: NextPage = () => {
   const [mutation, { data: postingTweet, loading }] =
     useMutation("/api/tweets");
   const { data: tweetsRes, mutate } = useSWR<TweetRes>("/api/tweets");
+  const { user } = useUser();
+
+  // tweet - post
   const onValid = (tweetData: Tweet) => {
     if (loading) return;
     mutation({ data: tweetData, method: "POST" });
@@ -32,6 +36,14 @@ const Home: NextPage = () => {
   useEffect(() => {
     mutate();
   }, [postingTweet]);
+
+  //tweet - delete
+  const handleRemoveTweet = (id: number) => {
+    if (loading) return;
+    console.log(id);
+    mutation({ configHeader: { id }, method: "DELETE" });
+  };
+
   return (
     <>
       <h1>HOME</h1>
@@ -50,6 +62,11 @@ const Home: NextPage = () => {
                 </Link>
                 <span>| 코멘트 : {tweet._count?.comments || 0}</span>
                 <span>| 좋아요 : {tweet._count?.likes || 0}</span>
+                {user?.id === tweet.userId ? (
+                  <div onClick={() => handleRemoveTweet(tweet.id)}>
+                    ::삭제::
+                  </div>
+                ) : null}
               </div>
             ))
           : "Loading.."}

@@ -48,7 +48,7 @@ export default function useMutation<T>(url: string): UseMutationResult<T> {
               headers: headers, // 헤더 정보 전달
             }
       );
-      const resData = method !== "DELETE" ? await response.json() : null;
+      const resData = await response.json();
       setState(prev => ({ ...prev, data: resData, loading: false }));
     } catch (error) {
       setState(prev => ({ ...prev, error, loading: false }));

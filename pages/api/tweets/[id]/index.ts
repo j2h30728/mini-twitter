@@ -37,9 +37,19 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       },
     })
   );
-  return res.status(201).json({ success: true, tweet, isLiked });
+  if (req.method === "GET")
+    return res.status(201).json({ success: true, tweet, isLiked });
+
+  if (req.method === "DELETE") {
+    await db.tweet.delete({
+      where: {
+        id: tweet.id,
+      },
+    });
+    return res.status(204).json({ success: true, message: "삭제되었습니다." });
+  }
 }
 
 export default withApiSession(
-  withHandler({ methods: ["GET"], handler, isPrivate: true })
+  withHandler({ methods: ["GET", "DELETE"], handler, isPrivate: true })
 );

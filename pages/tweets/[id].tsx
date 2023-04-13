@@ -38,11 +38,22 @@ interface CommentsResponse extends ResponseType {
 export default function tweet() {
   const { user } = useUser();
   const router = useRouter();
+  const [tweetMutate, { data: tweet, loading: tweetLoading }] = useMutation(
+    `/api/tweets/${router.query.id}`
+  );
   const { data: tweetDetail, mutate: likeMutate } = useSWR<TweetDetailResponse>(
     router.query.id ? `/api/tweets/${router.query.id}` : null
   );
+  //tweet - delete
+  const handleRemoveTweet = () => {
+    if (tweetLoading) return;
+    if (confirm("삭제하시겠습니까?")) {
+      tweetMutate({ method: "DELETE" });
+      router.replace("/");
+    }
+  };
 
-  // like
+  // tweet- like
   const [toggleLike] = useMutation(`/api/tweets/${router.query.id}/like`);
   //실제 좋아요 컨트롤 mutation 함수
   const onFavClick = () => {
@@ -82,6 +93,9 @@ export default function tweet() {
     <>
       <div>{tweetDetail?.tweet.text}</div>
       <div>{tweetDetail?.tweet.user.name}</div>
+      {user?.id === tweetDetail?.tweet.userId ? (
+        <button onClick={handleRemoveTweet}>삭제</button>
+      ) : null}
       <button
         onClick={onFavClick}
         className={cls(
