@@ -19,6 +19,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           name: true,
         },
       },
+      _count: {
+        select: {
+          likes: true,
+          comments: true,
+        },
+      },
     },
   });
   if (!tweet)

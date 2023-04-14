@@ -4,6 +4,9 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import useMutation from "../lib/client/useMutation";
 import { ResponseType } from "../lib/server/withHandler";
+import Layout from "@/components/layout";
+import Input from "@/components/input";
+import Button from "@/components/button";
 
 interface AccountForm {
   name: string;
@@ -33,28 +36,41 @@ export default function signUp() {
     }
   }, [data]);
   return (
-    <>
-      <h1>회원가입</h1>
-      <form onSubmit={handleSubmit(onValid)}>
-        <div>
-          <label>Name:</label>
-          <input {...register("name", { required: true })} type="text" />
-        </div>
-        <div>
-          <label>Email:</label>
-          <input {...register("email", { required: true })} type="email" />
-        </div>
-        <div>
-          <label>password:</label>
-          <input
-            {...register("password", { required: true })}
-            type="password"
+    <Layout title="회원가입">
+      <div className="h-screen mt-20 p-11  space-y-5">
+        <form onSubmit={handleSubmit(onValid)} className="w-full space-y-4">
+          <Input
+            label="이름"
+            name="name"
+            register={register("name", { required: true })}
+            type="text"
+            required
           />
+          <Input
+            label="이메일"
+            name="email"
+            register={register("email", { required: true })}
+            type="email"
+            required
+          />
+          <Input
+            label="비밀번호"
+            name="password"
+            register={register("password", { required: true })}
+            type="password"
+            required
+          />
+          <Button large text="회원가입" />
+        </form>
+        <div className="mt-5 flex gap-4">
+          <span>계정이 있으신가요?</span>
+          <Link
+            href="/log-in"
+            className="font-bold hover:text-point activ:text-pointFocus">
+            로그인 하러가기
+          </Link>
         </div>
-        <button>회원가입</button>
-      </form>
-      <span>계정이 있으신가요?</span>
-      <Link href="/log-in">로그인 하러가기</Link>
-    </>
+      </div>
+    </Layout>
   );
 }

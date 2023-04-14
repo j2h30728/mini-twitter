@@ -7,19 +7,10 @@ import { useForm } from "react-hook-form";
 import { ResponseType } from "@/lib/server/withHandler";
 import { useEffect } from "react";
 import useUser from "@/lib/client/useUser";
+import Layout from "@/components/layout";
+import { TweetDetailResponse } from "@/types/tweet";
+import CommentItem from "@/components/comment";
 
-interface TweetDetailResponse {
-  tweet: {
-    id: number;
-    text: string;
-    createdAt: Date;
-    updatedAt: Date;
-    userId: number;
-    user: User;
-  };
-  success: boolean;
-  isLiked: boolean;
-}
 interface CommetForm {
   text: string;
 }
@@ -41,9 +32,10 @@ export default function tweet() {
   const [tweetMutate, { data: tweet, loading: tweetLoading }] = useMutation(
     `/api/tweets/${router.query.id}`
   );
-  const { data: tweetDetail, mutate: likeMutate } = useSWR<TweetDetailResponse>(
-    router.query.id ? `/api/tweets/${router.query.id}` : null
-  );
+  const { data: tweetDetail, mutate: tweetDetailMutate } =
+    useSWR<TweetDetailResponse>(
+      router.query.id ? `/api/tweets/${router.query.id}` : null
+    );
   //tweet - delete
   const handleRemoveTweet = () => {
     if (tweetLoading) return;
@@ -52,23 +44,39 @@ export default function tweet() {
       router.replace("/");
     }
   };
-
-  // tweet- like
+  // tweet- like tweet: { tweetDetail.tweet._count.likes},
   const [toggleLike] = useMutation(`/api/tweets/${router.query.id}/like`);
   //실제 좋아요 컨트롤 mutation 함수
   const onFavClick = () => {
     if (!tweetDetail) return;
-    likeMutate(prev => prev && { ...prev, isLiked: !prev.isLiked }, false); //optimistic UI
+    tweetDetailMutate(
+      {
+        ...tweetDetail,
+        isLiked: !tweetDetail.isLiked,
+        tweet: {
+          ...tweetDetail.tweet,
+          _count: {
+            ...tweetDetail.tweet._count,
+            likes: tweetDetail.isLiked
+              ? --tweetDetail.tweet._count.likes
+              : ++tweetDetail.tweet._count.likes,
+          },
+        },
+      },
+      false
+    ); //optimistic UI
     toggleLike({ data: {}, method: "POST" }); // 좋아요 버튼 제어
   };
 
   //comment - post
   const { register, handleSubmit, reset } = useForm<CommetForm>();
-  const [mutationComment, { data: createComment, loading, error }] =
-    useMutation(`/api/tweets/${router.query.id}/comment`);
+  const [
+    mutationComment,
+    { data: createComment, loading: tweetCommentLoading },
+  ] = useMutation(`/api/tweets/${router.query.id}/comment`);
 
   const onValid = (comment: CommetForm) => {
-    if (loading) return;
+    if (tweetCommentLoading) return;
     mutationComment({ data: comment, method: "POST" });
     reset();
   };
@@ -82,70 +90,87 @@ export default function tweet() {
   useEffect(() => {
     commentsMutate();
   }, [createComment, commentsRes]);
-
+  useEffect(() => {
+    tweetDetailMutate();
+  }, [tweetCommentLoading]);
   //comment -delete
   const handleRemoveComment = (id: number) => {
-    if (loading) return;
-    mutationComment({ configHeader: { id }, method: "DELETE" });
+    if (tweetCommentLoading) return;
+    if (confirm("삭제하시겠습니까?")) {
+      mutationComment({ configHeader: { id }, method: "DELETE" });
+    }
   };
 
   return (
-    <>
-      <div>{tweetDetail?.tweet.text}</div>
-      <div>{tweetDetail?.tweet.user.name}</div>
-      {user?.id === tweetDetail?.tweet.userId ? (
-        <button onClick={handleRemoveTweet}>삭제</button>
-      ) : null}
-      <button
-        onClick={onFavClick}
+    <Layout canGoBack hasTabBar symbol>
+      <div
         className={cls(
-          "p-3 rounded-md flex items-center hover:bg-gray-100 justify-center ",
-          tweetDetail?.isLiked
-            ? "text-red-500  hover:text-red-600"
-            : "text-gray-400  hover:text-gray-500"
+          "flex flex-col py-4 space-y-3",
+          tweetDetail?.tweet.userId !== user?.id ? "mt-6" : ""
         )}>
-        {tweetDetail?.isLiked ? (
-          <svg
-            className="w-6 h-6"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-              fillRule="evenodd"
-              d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-              clipRule="evenodd"></path>
-          </svg>
-        ) : (
-          <svg
-            className="h-6 w-6 "
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-            />
-          </svg>
-        )}
-      </button>
-      <div>
-        {commentsRes?.success &&
-          commentsRes?.comments?.map(comment => (
-            <div key={comment.id}>
-              <span>{comment.user?.name} | </span>
-              <span>{comment.text} | </span>
-              <span>{comment.createdAt.toString().substring(0, 10)}</span>
-              {user?.id === comment.userId ? (
-                <button onClick={() => handleRemoveComment(comment.id)}>
-                  삭제
-                </button>
-              ) : null}
-            </div>
-          ))}
+        {user?.id === tweetDetail?.tweet.userId ? (
+          <button
+            onClick={handleRemoveTweet}
+            className="self-end relative top-5">
+            <svg
+              className="w-4 h-4 cursor-pointer "
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 384 512">
+              <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+            </svg>
+          </button>
+        ) : null}
+        <div className="flex w-full items-center gap-3">
+          <div className="w-10 h-10 bg-base300 rounded-full"></div>
+          <span className="font-bold text-pointFocus">
+            {tweetDetail?.tweet.user.name}
+          </span>
+        </div>
+        <p className="flex flex-col w-full bg-base1 px-5 py-6 rounded-xl text-lg leading-7 whitespace-pre-wrap">
+          {tweetDetail?.tweet.text}
+        </p>
+        <div className="w-full flex justify-between items-center px-3">
+          <button
+            onClick={onFavClick}
+            className={cls(
+              "w-10 h-10 p-2 rounded-full hover:bg-gray-100",
+              tweetDetail?.isLiked
+                ? "text-red-500  hover:text-red-600"
+                : "text-gray-400  hover:text-gray-500"
+            )}>
+            {tweetDetail?.isLiked ? (
+              <svg
+                className="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                  fillRule="evenodd"
+                  d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                  clipRule="evenodd"></path>
+              </svg>
+            ) : (
+              <svg
+                className="h-6 w-6 "
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
+              </svg>
+            )}
+          </button>
+          <div className="flex gap-4">
+            <span>마음에 들어요 {tweetDetail?.tweet._count.likes}</span>
+            <span>코멘트 {tweetDetail?.tweet._count.comments}</span>
+          </div>
+        </div>
       </div>
       <div>
         <form onSubmit={handleSubmit(onValid)}>
@@ -154,6 +179,22 @@ export default function tweet() {
           <button>제출</button>
         </form>
       </div>
-    </>
+      <div className="mt-3">
+        {commentsRes?.success &&
+          commentsRes?.comments?.map(comment => (
+            <div key={comment.id}>
+              <CommentItem
+                commentId={comment.id}
+                authorId={comment.userId}
+                userId={user?.id}
+                author={comment.user?.name}
+                comment={comment.text}
+                commentCreatedAt={comment.createdAt}
+                handleRemoveComment={handleRemoveComment}
+              />
+            </div>
+          ))}
+      </div>
+    </Layout>
   );
 }

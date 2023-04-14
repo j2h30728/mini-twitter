@@ -2,19 +2,15 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import useMutation from "@/lib/client/useMutation";
 import useSWR, { SWRConfig } from "swr";
-import Link from "next/link";
 import { Tweet, User } from "@prisma/client";
-import { NextPage } from "next";
+import { NextPage, NextPageContext } from "next";
 import db from "../lib/server/db";
 import useUser from "@/lib/client/useUser";
+import Layout from "@/components/layout";
+import { TweetWithCount } from "@/types/tweet";
+import TweetItem from "@/components/tweet";
+import { withSsrSession } from "@/lib/server/withSession";
 
-interface TweetWithCount extends Tweet {
-  _count: {
-    comments: number;
-    likes: number;
-  };
-  user: User;
-}
 interface TweetRes {
   success: boolean;
   tweets: TweetWithCount[];
@@ -40,59 +36,73 @@ const Home: NextPage = () => {
   //tweet - delete
   const handleRemoveTweet = (id: number) => {
     if (loading) return;
-    console.log(id);
-    mutation({ configHeader: { id }, method: "DELETE" });
+    confirm("트윗을 삭제하시겠습니까?") &&
+      mutation({ configHeader: { id }, method: "DELETE" });
   };
 
   return (
-    <>
-      <h1>HOME</h1>
-      {/* <h2>{user?.name}</h2> */}
+    <Layout symbol>
+      <h2 className="text-3xl mt-5 mr-3 text-right">
+        어서오세요! <span className="text-5xl text-cupcake1">{user.name}</span>
+        님
+      </h2>
       <form onSubmit={handleSubmit(onValid)}>
         <textarea {...register("text")} placeholder="트윗을 작성해 주세요." />
         <button>트윗하기</button>
       </form>
-      <div>
+      <div className="flex flex-col space-y-5 h-full">
         {tweetsRes
-          ? tweetsRes?.tweets?.map(tweet => (
-              <div key={tweet.id}>
-                <span>{tweet.user?.name}</span>
-                <Link href={`/tweets/${tweet.id}`}>
-                  <pre>| {tweet.text}</pre>
-                </Link>
-                <span>| 코멘트 : {tweet._count?.comments || 0}</span>
-                <span>| 좋아요 : {tweet._count?.likes || 0}</span>
-                {user?.id === tweet.userId ? (
-                  <div onClick={() => handleRemoveTweet(tweet.id)}>
-                    ::삭제::
-                  </div>
-                ) : null}
-              </div>
-            ))
+          ? tweetsRes?.tweets
+              .map(tweet => (
+                <TweetItem
+                  key={tweet.id}
+                  tweetId={tweet.id}
+                  userId={user?.id}
+                  authorId={tweet.userId}
+                  author={tweet.user?.name}
+                  content={tweet.text}
+                  commentsCount={tweet._count?.comments}
+                  likessCount={tweet._count?.likes}
+                  handleRemoveTweet={handleRemoveTweet}
+                />
+              ))
+              .reverse()
           : "Loading.."}
       </div>
-    </>
+    </Layout>
   );
 };
 
-const Page: NextPage<{ tweets: TweetWithCount[] }> = ({ tweets }) => {
+const Page: NextPage<{ tweets: TweetWithCount[]; profile: User }> = ({
+  tweets,
+  profile,
+}) => {
   return (
     <SWRConfig
       value={{
-        fallback: { "/api/tweets": { success: true, tweets } },
+        fallback: {
+          "/api/tweets": { success: true, tweets },
+          "/api/users/me": { success: true, profile },
+        },
       }}>
       <Home />
     </SWRConfig>
   );
 };
 
-export async function getServerSideProps() {
+export const getServerSideProps = withSsrSession(async function ({
+  req,
+}: NextPageContext) {
+  const profile = await db.user.findUnique({
+    where: { id: req?.session.user?.id },
+  });
   const tweets = await db.tweet.findMany({});
+
   return {
     props: {
+      profile: JSON.parse(JSON.stringify(profile)),
       tweets: JSON.parse(JSON.stringify(tweets)),
     },
   };
-}
-
+});
 export default Page;
