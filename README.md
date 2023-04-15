@@ -29,3 +29,8 @@ SWR와 tailwind도 챌린지 blueprint에 설정되어 있습니다.
 
 - 코딩 챌린지를 완료한 후. https://codesandbox.io/dashboard 으로 이동하여.
 - 'Create Sandbox' > Import Project 한 후에 프로젝트의 깃헙 URL 을 복사. 붙여넣기 하면 됩니다
+
+## 메모:
+
+로그인한 사용자 자신의 프로필 정보 조회 할수 있음
+코드 재사용성이 높아지고 기능 통합되어 관리하기 쉬움

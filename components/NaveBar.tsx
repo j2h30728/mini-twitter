@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 
 export default function NavBar() {
-  const { data, error, mutate } = useSWR<ResponseType>("/api/users/me");
+  const { data, error, mutate } = useSWR<ResponseType>("/api/users/profile");
   const router = useRouter();
   const handleLogout = useLogout();
 

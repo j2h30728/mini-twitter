@@ -25,7 +25,9 @@ export default function TweetItem({
       {authorId! !== userId ? (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-base200 rounded-full"></div>
-          <span className="font-bold">{author}</span>
+          <Link href={`/profile/${authorId}`} className="font-bold">
+            {author}
+          </Link>
         </div>
       ) : null}
       <div

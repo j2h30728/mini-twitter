@@ -30,6 +30,11 @@ async function handler(
       email,
       name,
       password: hashedPassword,
+      profile: {
+        create: {
+          bio: `안녕하세요. 저는 ${name}입니다.`,
+        },
+      },
     },
   });
 

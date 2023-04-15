@@ -14,12 +14,22 @@ model User {
   id Int @id @default(autoincrement())
   email String @unique
   name String
+  
   password String 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  teet Tweet[]
+  tweets Tweet[]
   likes Like[]
   comments Comment[]
+  profile Profile?
+}
+
+model Profile {
+  id     Int    @id @default(autoincrement())
+  bio    String
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int    @unique
+  @@index([userId])
 }
 
 model Tweet {

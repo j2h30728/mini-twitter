@@ -64,8 +64,8 @@ export default function Layout({
       </div>
       <div
         className={cls(
-          "h-screen pt-16 px-5 border-x-4 border-solid border-base bg-white",
-          hasTabBar ? "pb-24" : ""
+          "h-screen pt-16 px-5 border-x-4 border-solid border-base bg-white overflow-scroll",
+          hasTabBar ? "pb-32" : ""
         )}>
         {children}
       </div>
@@ -75,9 +75,7 @@ export default function Layout({
             <a
               className={cls(
                 "flex flex-col items-center space-y-2 ",
-                router.pathname === "/"
-                  ? "text-orange-500"
-                  : "hover:text-gray-500 transition-colors"
+                "hover:text-gray-500 transition-colors"
               )}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -94,7 +92,7 @@ export default function Layout({
               className={cls(
                 "flex flex-col items-center space-y-2 ",
                 router.pathname === "/"
-                  ? "text-orange-500"
+                  ? "text-primaryFocus"
                   : "hover:text-gray-500 transition-colors"
               )}>
               <svg
@@ -118,7 +116,7 @@ export default function Layout({
               className={cls(
                 "flex flex-col items-center space-y-2 ",
                 router.pathname === "/profile"
-                  ? "text-orange-500"
+                  ? "text-primaryFocus"
                   : "hover:text-gray-500 transition-colors"
               )}>
               <svg

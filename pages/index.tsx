@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import useMutation from "@/lib/client/useMutation";
 import useSWR, { SWRConfig } from "swr";
@@ -10,6 +10,7 @@ import Layout from "@/components/layout";
 import { TweetWithCount } from "@/types/tweet";
 import TweetItem from "@/components/tweet";
 import { withSsrSession } from "@/lib/server/withSession";
+import Input from "@/components/input";
 
 interface TweetRes {
   success: boolean;
@@ -40,17 +41,39 @@ const Home: NextPage = () => {
       mutation({ configHeader: { id }, method: "DELETE" });
   };
 
+  //createMode
+  const [isCreateMode, setIsCreateMode] = useState(false);
+  const handleCreateTweetMode = () => {
+    setIsCreateMode(prev => !prev);
+  };
+
   return (
-    <Layout symbol>
-      <h2 className="text-3xl mt-5 mr-3 text-right">
-        어서오세요! <span className="text-5xl text-cupcake1">{user.name}</span>
+    <Layout symbol hasTabBar>
+      <h2 className="text-3xl mt-10 mr-3 text-right">
+        어서오세요! <span className="text-5xl text-cupcake1">{user?.name}</span>
         님
       </h2>
-      <form onSubmit={handleSubmit(onValid)}>
-        <textarea {...register("text")} placeholder="트윗을 작성해 주세요." />
-        <button>트윗하기</button>
-      </form>
-      <div className="flex flex-col space-y-5 h-full">
+      <div onClick={handleCreateTweetMode}>트윗 하기</div>
+      {isCreateMode ? (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity">
+          <div className="fixed inset-0 z-10 overflow-y-auto justify-center items-center">
+            <form
+              onSubmit={handleSubmit(onValid)}
+              className="flex min-h-40 w-40 items-end justify-center p-4 text-center sm:items-center sm:p-0 bg-base1">
+              <Input
+                label="트윗 추가 하기"
+                name="tweet"
+                type="textarea"
+                register={register("text")}
+                required
+              />
+              <button>트윗하기</button>
+            </form>
+          </div>
+        </div>
+      ) : null}
+
+      <div className="flex flex-col space-y-5 h-full`">
         {tweetsRes
           ? tweetsRes?.tweets
               .map(tweet => (
@@ -82,7 +105,7 @@ const Page: NextPage<{ tweets: TweetWithCount[]; profile: User }> = ({
       value={{
         fallback: {
           "/api/tweets": { success: true, tweets },
-          "/api/users/me": { success: true, profile },
+          "/api/users/profile": { success: true, profile },
         },
       }}>
       <Home />

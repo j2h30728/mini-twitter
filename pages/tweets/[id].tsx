@@ -1,4 +1,4 @@
-import useSWR from "swr";
+import useSWR, { SWRConfig } from "swr";
 import { useRouter } from "next/router";
 import { Tweet, User } from "@prisma/client";
 import useMutation from "@/lib/client/useMutation";
@@ -6,10 +6,12 @@ import { cls } from "@/lib/client/utils";
 import { useForm } from "react-hook-form";
 import { ResponseType } from "@/lib/server/withHandler";
 import { useEffect } from "react";
-import useUser from "@/lib/client/useUser";
 import Layout from "@/components/layout";
 import { TweetDetailResponse } from "@/types/tweet";
 import CommentItem from "@/components/comment";
+import { NextPage, NextPageContext } from "next";
+import { withSsrSession } from "@/lib/server/withSession";
+import db from "@/lib/server/db";
 
 interface CommetForm {
   text: string;
@@ -26,8 +28,7 @@ interface Comment {
 interface CommentsResponse extends ResponseType {
   comments: Comment[];
 }
-export default function tweet() {
-  const { user } = useUser();
+const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
   const router = useRouter();
   const [tweetMutate, { data: tweet, loading: tweetLoading }] = useMutation(
     `/api/tweets/${router.query.id}`
@@ -106,9 +107,9 @@ export default function tweet() {
       <div
         className={cls(
           "flex flex-col py-4 space-y-3",
-          tweetDetail?.tweet.userId !== user?.id ? "mt-6" : ""
+          tweetDetail?.tweet?.userId !== profile?.id ? "mt-6" : ""
         )}>
-        {user?.id === tweetDetail?.tweet.userId ? (
+        {profile?.id === tweetDetail?.tweet.userId ? (
           <button
             onClick={handleRemoveTweet}
             className="self-end relative top-5">
@@ -186,7 +187,7 @@ export default function tweet() {
               <CommentItem
                 commentId={comment.id}
                 authorId={comment.userId}
-                userId={user?.id}
+                userId={profile?.id}
                 author={comment.user?.name}
                 comment={comment.text}
                 commentCreatedAt={comment.createdAt}
@@ -197,4 +198,33 @@ export default function tweet() {
       </div>
     </Layout>
   );
-}
+};
+
+const Page: NextPage<{ profile: User }> = ({ profile }) => {
+  return (
+    <SWRConfig
+      value={{
+        fallback: {
+          "/api/users/profile": { success: true, profile },
+        },
+      }}>
+      <Tweet profile={profile} />
+    </SWRConfig>
+  );
+};
+
+export const getServerSideProps = withSsrSession(async function ({
+  req,
+}: NextPageContext) {
+  const profile = await db.user.findUnique({
+    where: { id: req?.session.user?.id },
+  });
+
+  return {
+    props: {
+      profile: JSON.parse(JSON.stringify(profile)),
+    },
+  };
+});
+
+export default Page;
