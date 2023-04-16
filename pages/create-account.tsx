@@ -17,7 +17,7 @@ interface AccountForm {
 export default function signUp() {
   const router = useRouter();
   const { register, handleSubmit, reset } = useForm<AccountForm>();
-  const [mutation, { loading, data }] =
+  const [mutation, { loading, data, error }] =
     useMutation<ResponseType>("/api/users/signUp");
 
   const onValid = (validForm: AccountForm) => {
@@ -35,6 +35,10 @@ export default function signUp() {
       }
     }
   }, [data]);
+  useEffect(() => {
+    if (data && !data.success) alert(error);
+  }, [error]);
+
   return (
     <Layout title="회원가입">
       <div className="h-screen mt-20 p-11  space-y-5">

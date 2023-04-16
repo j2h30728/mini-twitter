@@ -25,7 +25,7 @@ export default function CommentItem({
         <span
           className={cls(
             "font-semibold",
-            authorId !== userId ? "text-primaryFocus" : "text-pointFocus"
+            authorId !== userId ? "text-pointFocus" : "text-primaryFocus"
           )}>
           {author}
         </span>

@@ -24,8 +24,9 @@ export default function TweetItem({
     <div className="w-full flex flex-col border border-stone-200 rounded-lg space-y-2">
       {authorId! !== userId ? (
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-base200 rounded-full"></div>
-          <Link href={`/profile/${authorId}`} className="font-bold">
+          <Link
+            href={`/profile/${authorId}`}
+            className="font-bold text-pointFocus">
             {author}
           </Link>
         </div>

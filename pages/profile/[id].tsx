@@ -2,6 +2,7 @@ import Layout from "../../components/layout";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 import { userProfile } from "@/types/users";
+import { useEffect } from "react";
 
 interface resProfile {
   profile: userProfile;
@@ -10,12 +11,19 @@ interface resProfile {
 
 export default function Profile() {
   const router = useRouter();
-  const { data: user, isLoading } = useSWR<resProfile>(
+  const {
+    data: user,
+    isLoading,
+    error,
+  } = useSWR<resProfile>(
     router.query.id ? `/api/users/profile/${router.query.id}` : null
   );
-  console.log(user);
+  useEffect(() => {
+    if (user && !user.success) alert(error);
+  }, [user]);
+
   return !isLoading ? (
-    <Layout title="마이페이지" hasTabBar>
+    <Layout title="마이페이지" hasTabBar canGoBack>
       <h1>{user?.profile?.name}</h1>
       <p>{user?.profile?.email}</p>
       <p>{user?.profile?.profile?.bio}</p>

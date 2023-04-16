@@ -30,13 +30,23 @@ interface CommentsResponse extends ResponseType {
 }
 const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
   const router = useRouter();
-  const [tweetMutate, { data: tweet, loading: tweetLoading }] = useMutation(
-    `/api/tweets/${router.query.id}`
+  const [
+    tweetMutate,
+    { data: tweet, loading: tweetLoading, error: tweetError },
+  ] = useMutation<TweetDetailResponse>(`/api/tweets/${router.query.id}`);
+  const {
+    data: tweetDetail,
+    mutate: tweetDetailMutate,
+    error: tweetDetailError,
+  } = useSWR<TweetDetailResponse>(
+    router.query.id ? `/api/tweets/${router.query.id}` : null
   );
-  const { data: tweetDetail, mutate: tweetDetailMutate } =
-    useSWR<TweetDetailResponse>(
-      router.query.id ? `/api/tweets/${router.query.id}` : null
-    );
+  //error
+  useEffect(() => {
+    if (tweet && !tweet.success) alert(tweetDetailError);
+    if (tweetDetail && !tweetDetail.success) alert(tweetError);
+  }, [tweetDetailError, tweetError]);
+
   //tweet - delete
   const handleRemoveTweet = () => {
     if (tweetLoading) return;

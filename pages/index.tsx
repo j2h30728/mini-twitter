@@ -19,10 +19,16 @@ interface TweetRes {
 
 const Home: NextPage = () => {
   const { register, handleSubmit, reset } = useForm<Tweet>();
-  const [mutation, { data: postingTweet, loading }] =
-    useMutation("/api/tweets");
-  const { data: tweetsRes, mutate } = useSWR<TweetRes>("/api/tweets");
+  const [mutation, { data: tweetRes, loading, error: tweetError }] =
+    useMutation<TweetRes>("/api/tweets");
+  const { data: tweets, error: tweetsErrpr } = useSWR<TweetRes>("/api/tweets");
   const { user } = useUser();
+
+  //error
+  useEffect(() => {
+    if (tweetRes && !tweetRes.success) alert(tweetError);
+    if (tweetsErrpr && !tweetsErrpr.success) alert(tweetsErrpr);
+  }, [tweetRes, tweetsErrpr]);
 
   // tweet - post
   const onValid = (tweetData: Tweet) => {
@@ -30,9 +36,6 @@ const Home: NextPage = () => {
     mutation({ data: tweetData, method: "POST" });
     reset();
   };
-  useEffect(() => {
-    mutate();
-  }, [postingTweet]);
 
   //tweet - delete
   const handleRemoveTweet = (id: number) => {
@@ -74,8 +77,8 @@ const Home: NextPage = () => {
       ) : null}
 
       <div className="flex flex-col space-y-5 h-full`">
-        {tweetsRes
-          ? tweetsRes?.tweets
+        {tweets?.success
+          ? tweets?.tweets
               .map(tweet => (
                 <TweetItem
                   key={tweet.id}
