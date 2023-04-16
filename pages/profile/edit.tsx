@@ -17,6 +17,7 @@ interface EditProfile {
 }
 interface EidtProfileResponse {
   success: boolean;
+  message: string;
   updateProfile: userProfile;
 }
 
@@ -33,9 +34,12 @@ const Profile: NextPage<{ user: userProfile }> = ({ user }) => {
       editProfile({ data: eidtData, method: "PUT" });
   };
   useEffect(() => {
-    if (data && data.success) router.push("/profile");
-    if (!data?.success && editError) {
-      alert(editError);
+    if (data) {
+      if (data.success) {
+        router.push("/profile");
+      } else {
+        alert(data.message);
+      }
     }
   }, [data]);
   return (

@@ -23,4 +23,5 @@ export interface TweetDetailResponse {
   };
   success: boolean;
   isLiked: boolean;
+  message: string;
 }
