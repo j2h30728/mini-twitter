@@ -11,6 +11,8 @@ import { TweetWithCount } from "@/types/tweet";
 import TweetItem from "@/components/tweet";
 import { withSsrSession } from "@/lib/server/withSession";
 import Input from "@/components/input";
+import Button from "@/components/button";
+import { cls } from "@/lib/client/utils";
 
 interface TweetRes {
   success: boolean;
@@ -21,18 +23,26 @@ const Home: NextPage = () => {
   const { register, handleSubmit, reset } = useForm<Tweet>();
   const [mutation, { data: tweetRes, loading, error: tweetError }] =
     useMutation<TweetRes>("/api/tweets");
-  const { data: tweets, error: tweetsErrpr } = useSWR<TweetRes>("/api/tweets");
+  const {
+    data: tweets,
+    error: tweetsError,
+    mutate,
+  } = useSWR<TweetRes>("/api/tweets");
   const { user } = useUser();
 
   //error
   useEffect(() => {
+    console.log(tweetRes);
     if (tweetRes && !tweetRes.success) alert(tweetError);
-    if (tweetsErrpr && !tweetsErrpr.success) alert(tweetsErrpr);
-  }, [tweetRes, tweetsErrpr]);
+    if (tweets && !tweets.success) alert(tweetsError);
+    mutate();
+  }, [tweetRes, tweets]);
 
   // tweet - post
   const onValid = (tweetData: Tweet) => {
+    if (!tweetData.text) return alert("트윗 내용을 입력해주세요.");
     if (loading) return;
+    setIsCreateMode(prev => !prev);
     mutation({ data: tweetData, method: "POST" });
     reset();
   };
@@ -56,34 +66,51 @@ const Home: NextPage = () => {
         어서오세요! <span className="text-5xl text-cupcake1">{user?.name}</span>
         님
       </h2>
-      <div onClick={handleCreateTweetMode}>트윗 하기</div>
+      <button
+        onClick={handleCreateTweetMode}
+        className="fixed flex flex-col items-center space-y-2 w-14 h-14 bottom-0 z-10 my-1 inset-x-1/2 -translate-x-1/2">
+        <div className="w-14 h-14 bg-base flex flex-col items-center justify-center space-y-1 ">
+          <div className="w-10 h-10 bg-primary rounded-full flex justify-center items-center cursor-pointer">
+            <svg
+              className="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512">
+              <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
+            </svg>
+          </div>
+          <span>트윗추가</span>
+        </div>
+      </button>
       {isCreateMode ? (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity z-10">
-          <div className="flex min-h-full items-center justify-center p-4">
-            <div className="min-h-max min-w-max bg-base p-3 rounded-md">
+        <div className="flex min-h-full items-center justify-center p-4">
+          <div
+            onClick={handleCreateTweetMode}
+            className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity z-10 "></div>
+          <div className="fixed h-96 w-96 bg-base p-4 rounded-md flex flex-col z-20 -translate-y-1/4">
+            <div className="w-full flex justify-center items-center relative border-b-2 border-primary border-solid">
+              <h1 className="text-2xl my-3">Tweet</h1>
               <button
                 onClick={handleCreateTweetMode}
-                className="self-end rounded-full hover:bg-cupcake1 p-2 active:bg-cupcake1Focus">
+                className=" cursor-pointer absolute right-0 rounded-full hover:bg-cupcake1 p-2 active:bg-cupcake1Focus">
                 <svg
-                  className="w-4 h-4 cursor-pointer "
+                  className="w-4 h-4"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 384 512">
                   <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                 </svg>
               </button>
-              <form
-                onSubmit={handleSubmit(onValid)}
-                className="flex min-h-80 h-80 w-80 items-end justify-center text-center sm:items-center">
-                <Input
-                  label="트윗 추가 하기"
-                  name="tweet"
-                  kind="textarea"
-                  register={register("text")}
-                  required
-                />
-                <button>트윗하기</button>
-              </form>
             </div>
+            <form
+              onSubmit={handleSubmit(onValid)}
+              className="flex flex-col justify-center h-full mt-3 space-y-6">
+              <Input
+                name="tweet"
+                kind="textarea"
+                register={register("text")}
+                required
+              />
+              <Button text="트윗하기" />
+            </form>
           </div>
         </div>
       ) : null}

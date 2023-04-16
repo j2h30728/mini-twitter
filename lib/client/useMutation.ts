@@ -51,7 +51,7 @@ export default function useMutation<T>(url: string): UseMutationResult<T> {
       const resData =
         method !== "DELETE"
           ? await response.json()
-          : { succes: true, message: "삭제" };
+          : { success: true, message: "삭제" };
       setState(prev => ({ ...prev, data: resData, loading: false }));
     } catch (error) {
       setState(prev => ({ ...prev, error, loading: false }));

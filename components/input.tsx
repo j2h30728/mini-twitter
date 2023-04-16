@@ -1,7 +1,7 @@
 import type { UseFormRegisterReturn } from "react-hook-form";
 
 interface InputProps {
-  label: string;
+  label?: string;
   name: string;
   kind?: "text" | "textarea";
   register: UseFormRegisterReturn;
@@ -18,13 +18,13 @@ export default function Input({
   required,
 }: InputProps) {
   return (
-    <div>
+    <div className="h-full">
       <label
         className="mb-1 block text-md font-medium text-baseContent"
         htmlFor={name}>
         {label}
       </label>
-      <div className="rounded-md relative flex  items-center shadow-sm">
+      <div className="rounded-md relative flex h-full items-center shadow-sm">
         {kind === "text" ? (
           <input
             id={name}
@@ -37,8 +37,9 @@ export default function Input({
           <textarea
             id={name}
             {...register}
-            className="mt-1 shadow-sm w-full h-full focus:ring-point rounded-md border-gray-300 focus:border-point"
+            className="mt-1 resize-none shadow-sm w-full h-full p-3 focus:ring-point rounded-md border-gray-300 focus:border-point"
             rows={4}
+            required
           />
         )}
       </div>
