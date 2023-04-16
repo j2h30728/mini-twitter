@@ -48,7 +48,7 @@ export default function ProfileForm({
               ? "text-pointLight3 underline decoration-2 "
               : "text-primaryDark1"
           )}>
-          작성한 트윗
+          작성한 트윗 <span>({createdTweets.length})</span>
         </button>
 
         <button
@@ -59,7 +59,7 @@ export default function ProfileForm({
               ? "text-pointLight3 underline decoration-2 "
               : "text-primaryDark1"
           )}>
-          마음 찍은 트윗
+          마음 찍은 트윗 <span>({likedTweets.length})</span>
         </button>
       </div>
       <div>

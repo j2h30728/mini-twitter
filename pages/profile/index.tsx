@@ -13,7 +13,7 @@ const Profile: NextPage<{ user: userProfile }> = ({ user }) => {
       <div className="flex flex-col space-y-4">
         <Link
           href="/profile/edit"
-          className="bg-primary p-2 rounded-md mt-5 self-end w-fit shadow">
+          className="bg-primary p-2 rounded-md mt-5 self-end w-fit text-white text-semibold shadow-lg hover:bg-primaryFocus active:bg-point focus:ring-2 focus:ring-offset-2 focus:ring-point focus:outline-none">
           내 정보 수정하기
         </Link>
         <ProfileForm

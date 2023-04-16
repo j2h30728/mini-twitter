@@ -12,6 +12,7 @@ import CommentItem from "@/components/comment";
 import { NextPage, NextPageContext } from "next";
 import { withSsrSession } from "@/lib/server/withSession";
 import db from "@/lib/server/db";
+import Link from "next/link";
 
 interface CommetForm {
   text: string;
@@ -133,9 +134,16 @@ const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
         ) : null}
         <div className="flex w-full items-center gap-3">
           <div className="w-10 h-10 bg-base300 rounded-full"></div>
-          <span className="font-bold text-pointFocus">
+          <Link
+            href={`/profile/${profile.id}`}
+            className={cls(
+              "text-2xl font-bold",
+              profile?.id === tweetDetail?.tweet.userId
+                ? "text-pointLight3"
+                : "text-primaryDark1"
+            )}>
             {tweetDetail?.tweet.user.name}
-          </span>
+          </Link>
         </div>
         <p className="flex flex-col w-full bg-base1 px-5 py-6 rounded-xl text-lg leading-7 whitespace-pre-wrap">
           {tweetDetail?.tweet.text}
@@ -192,9 +200,9 @@ const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
             {...register("text")}
             className="appearance-none w-4/6 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-point focus:border-point"
           />
-          <button className="p-2 bg-primary rounded-full">
+          <button className="p-2 bg-primary rounded-full shadow-lg hover:bg-primaryFocus active:bg-point focus:ring-2 focus:ring-offset-2 focus:ring-point focus:outline-none">
             <svg
-              className="w-5 h-5"
+              className="w-5 h-5 "
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 448 512">
               <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />

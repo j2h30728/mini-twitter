@@ -1,4 +1,5 @@
 import { cls } from "@/lib/client/utils";
+import Link from "next/link";
 
 interface CommentProps {
   commentId: number;
@@ -22,13 +23,14 @@ export default function CommentItem({
   return (
     <div className="w-full flex flex-col justify-center border rounded-lg pt-4">
       <div className="flex justify-between">
-        <span
+        <Link
+          href={`/profile/${authorId}`}
           className={cls(
             "font-semibold",
-            authorId !== userId ? "text-pointFocus" : "text-primaryFocus"
+            authorId === userId ? "text-pointFocus" : "text-primaryDark1"
           )}>
           {author}
-        </span>
+        </Link>
         <span className="text-sm text-primaryContent">
           {commentCreatedAt.toString().substring(0, 10)}
         </span>

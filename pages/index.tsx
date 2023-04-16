@@ -61,9 +61,13 @@ const Home: NextPage = () => {
 
   return (
     <Layout symbol hasTabBar>
-      <h2 className="text-3xl mt-10 mr-3 text-right">
-        어서오세요!{" "}
-        <span className="text-5xl text-pointLight3">{user?.name}</span>님
+      <h2 className="text-3xl my-10 mr-3 text-right font-semibold">
+        어서오세요!&nbsp;
+        <span className="text-5xl text-pointLight3 font-bold">
+          {user?.name}
+        </span>
+        님! <br />
+        아래의 버튼으로 트윗을 추가해 보세요!
       </h2>
       <button
         onClick={handleCreateTweetMode}
@@ -114,7 +118,7 @@ const Home: NextPage = () => {
         </div>
       ) : null}
 
-      <div className="flex flex-col space-y-5 h-full`">
+      <div className="flex flex-col space-y-10 h-full`">
         {tweets?.success
           ? tweets?.tweets
               .map(tweet => (
