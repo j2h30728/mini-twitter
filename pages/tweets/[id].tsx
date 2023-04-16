@@ -121,7 +121,8 @@ const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
     }
   };
 
-  return (
+
+  return tweetDetail && profile ? (
     <Layout canGoBack hasTabBar symbol>
       <div
         className={cls(
@@ -240,9 +241,14 @@ const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
           ))}
       </div>
     </Layout>
+  ) : (
+    <Layout title="마이페이지" hasTabBar canGoBack>
+      <div className="flex justify-center items-center">
+        <p className="flex justify-center items-center ">Loading...</p>
+      </div>
+    </Layout>
   );
 };
-
 const Page: NextPage<{ profile: User }> = ({ profile }) => {
   return (
     <SWRConfig

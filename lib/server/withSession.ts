@@ -8,7 +8,7 @@ declare module "iron-session" {
 }
 const cookieOptions = {
   cookieName: "mini-twitter",
-  password: process.env.COOKIE_PASSWORD as string,
+  password: 'wdqwqwdadsadasdqwdqwdqdqwfdsfsdcbghnrtyjhrtjtktyjtyjghjghnffgd' as string,
 };
 
 export function withApiSession(fn: any) {

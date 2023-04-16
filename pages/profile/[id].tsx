@@ -36,6 +36,10 @@ export default function Profile() {
       </div>
     </Layout>
   ) : (
-    "Loaindg..."
+       <Layout title="마이페이지" hasTabBar canGoBack>
+      <div className="flex justify-center items-center">
+               <p>Loading...</p>
+      </div>
+    </Layout>
   );
 }
