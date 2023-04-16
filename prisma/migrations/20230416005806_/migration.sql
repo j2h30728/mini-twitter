@@ -9,6 +9,14 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
+CREATE TABLE "Profile" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "bio" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
+    CONSTRAINT "Profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
 CREATE TABLE "Tweet" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "text" TEXT NOT NULL,
@@ -28,9 +36,8 @@ CREATE TABLE "Like" (
     CONSTRAINT "Like_tweetId_fkey" FOREIGN KEY ("tweetId") REFERENCES "Tweet" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- RedefineTables
-PRAGMA foreign_keys=OFF;
-CREATE TABLE "new_Comment" (
+-- CreateTable
+CREATE TABLE "Comment" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "text" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -39,16 +46,15 @@ CREATE TABLE "new_Comment" (
     CONSTRAINT "Comment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "Comment_tweetId_fkey" FOREIGN KEY ("tweetId") REFERENCES "Tweet" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
-INSERT INTO "new_Comment" ("createdAt", "id", "text", "tweetId", "userId") SELECT "createdAt", "id", "text", "tweetId", "userId" FROM "Comment";
-DROP TABLE "Comment";
-ALTER TABLE "new_Comment" RENAME TO "Comment";
-CREATE INDEX "Comment_userId_idx" ON "Comment"("userId");
-CREATE INDEX "Comment_tweetId_idx" ON "Comment"("tweetId");
-PRAGMA foreign_key_check;
-PRAGMA foreign_keys=ON;
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Profile_userId_key" ON "Profile"("userId");
+
+-- CreateIndex
+CREATE INDEX "Profile_userId_idx" ON "Profile"("userId");
 
 -- CreateIndex
 CREATE INDEX "Tweet_userId_idx" ON "Tweet"("userId");
@@ -58,3 +64,9 @@ CREATE INDEX "Like_userId_idx" ON "Like"("userId");
 
 -- CreateIndex
 CREATE INDEX "Like_tweetId_idx" ON "Like"("tweetId");
+
+-- CreateIndex
+CREATE INDEX "Comment_userId_idx" ON "Comment"("userId");
+
+-- CreateIndex
+CREATE INDEX "Comment_tweetId_idx" ON "Comment"("tweetId");

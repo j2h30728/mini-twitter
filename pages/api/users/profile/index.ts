@@ -3,6 +3,7 @@ import { NextApiResponse } from "next";
 import db from "@/lib/server/db";
 import withHandler, { ResponseType } from "@/lib/server/withHandler";
 import { withApiSession } from "@/lib/server/withSession";
+
 async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseType>
@@ -25,6 +26,7 @@ async function handler(
       },
       profile: {
         select: {
+          id: true,
           bio: true,
         },
       },
@@ -36,20 +38,20 @@ async function handler(
   if (req.method === "GET")
     return res.status(200).json({ success: true, profile });
 
-  if (req.method === "POST") {
-    await db.user.update({
+  if (req.method === "PUT") {
+    console.log(profile.id, body);
+    const updatedProfile = await db.user.update({
       where: {
         id: profile.id,
       },
       data: {
         name: body.name,
-        profile: {
-          update: {
-            bio: body.bio,
-          },
-        },
+        profile: { update: { bio: body.bio } },
       },
+      include: { profile: true },
     });
+    console.log(updatedProfile);
+    return res.status(200).json({ success: true, updatedProfile });
   }
 
   return res.json({
@@ -59,5 +61,5 @@ async function handler(
 }
 
 export default withApiSession(
-  withHandler({ methods: ["GET", "POST"], handler, isPrivate: true })
+  withHandler({ methods: ["GET", "PUT"], handler, isPrivate: true })
 );

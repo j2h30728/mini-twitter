@@ -4,11 +4,12 @@ import { SWRConfig } from "swr";
 import db from "../../lib/server/db";
 import Layout from "../../components/layout";
 import { userProfile } from "@/types/users";
+import Link from "next/link";
 
 const Profile: NextPage<{ user: userProfile }> = ({ user }) => {
   return (
     <Layout title="마이페이지" hasTabBar>
-      <button>회원정보수정하기</button>
+      <Link href="/profile/edit">회원정보수정하기</Link>
       <h1>{user.name}</h1>
       <p>{user.email}</p>
       <p>{user.profile?.bio}</p>

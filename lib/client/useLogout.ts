@@ -5,10 +5,11 @@ import useMutation from "./useMutation";
 
 export default function useLogout() {
   const router = useRouter();
-  const [mutation, { data: isLogout }] =
+  const [mutation, { data: isLogout, error }] =
     useMutation<ResponseType>("/api/users/logout");
   useEffect(() => {
     if (isLogout?.success) router.replace("/log-in");
+    if (!isLogout?.success && error) alert(error);
   }, [isLogout]);
 
   const handleLogout = () => {
