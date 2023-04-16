@@ -31,7 +31,6 @@ const Home: NextPage = () => {
 
   //error
   useEffect(() => {
-    console.log(tweetRes);
     if (tweetRes && !tweetRes.success) alert(tweetError);
     if (tweets && !tweets.success) alert(tweetsError);
     mutate();

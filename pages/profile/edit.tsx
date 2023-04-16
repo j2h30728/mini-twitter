@@ -28,7 +28,6 @@ const Profile: NextPage<{ user: userProfile }> = ({ user }) => {
   const [editProfile, { data, loading, error: editError }] =
     useMutation<EidtProfileResponse>("/api/users/profile");
   const handleEidt = (eidtData: EditProfile) => {
-    console.log(eidtData);
     if (loading) return;
     if (confirm("수정하시겠습니까?"))
       editProfile({ data: eidtData, method: "PUT" });

@@ -17,7 +17,7 @@ model User {
   password String 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  teet Tweet[]
+  tweets Tweet[]
   likes Like[]
   comments Comment[]
   profile Profile?

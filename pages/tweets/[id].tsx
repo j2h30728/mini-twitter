@@ -29,6 +29,7 @@ interface Comment {
 interface CommentsResponse extends ResponseType {
   comments: Comment[];
 }
+
 const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
   const router = useRouter();
   const [
@@ -84,8 +85,12 @@ const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
   const { register, handleSubmit, reset } = useForm<CommetForm>();
   const [
     mutationComment,
-    { data: createComment, loading: tweetCommentLoading },
-  ] = useMutation(`/api/tweets/${router.query.id}/comment`);
+    {
+      data: createComment,
+      loading: tweetCommentLoading,
+      error: creatCommentError,
+    },
+  ] = useMutation<ResponseType>(`/api/tweets/${router.query.id}/comment`);
 
   const onValid = (comment: CommetForm) => {
     if (tweetCommentLoading) return;
@@ -102,9 +107,12 @@ const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
   useEffect(() => {
     commentsMutate();
   }, [createComment, commentsRes]);
+
   useEffect(() => {
+    if (createComment && !createComment.success) alert(creatCommentError);
     tweetDetailMutate();
-  }, [tweetCommentLoading]);
+  }, [createComment]);
+
   //comment -delete
   const handleRemoveComment = (id: number) => {
     if (tweetCommentLoading) return;
@@ -132,18 +140,24 @@ const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
             </svg>
           </button>
         ) : null}
-        <div className="flex w-full items-center gap-3">
-          <div className="w-10 h-10 bg-base300 rounded-full"></div>
+        <div className="flex w-full items-baseline gap-3">
+          {/* <div className="w-10 h-10 bg-base300 rounded-full"></div> */}
           <Link
             href={`/profile/${profile.id}`}
             className={cls(
-              "text-2xl font-bold",
+              "text-3xl font-bold",
               profile?.id === tweetDetail?.tweet.userId
                 ? "text-pointLight3"
                 : "text-primaryDark1"
             )}>
             {tweetDetail?.tweet.user.name}
           </Link>
+          <span className="font-semibold text-base3">
+            {tweetDetail?.tweet.user.email}
+          </span>
+          <span className="text-sm text-primaryContent">
+            {tweetDetail?.tweet.createdAt.toString().substring(0, 10)}
+          </span>
         </div>
         <p className="flex flex-col w-full bg-base1 px-5 py-6 rounded-xl text-lg leading-7 whitespace-pre-wrap">
           {tweetDetail?.tweet.text}

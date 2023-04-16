@@ -39,7 +39,11 @@ export default function TweetItem({
         <Link
           href={`/tweets/${tweetId}`}
           className="w-full min-h-[100px] max-h-fit p-1 mb-3 mt-2 border-solid border-b-2 border-base100">
-          <p className="whitespace-pre-wrap mb-3">{content}</p>
+          <p className="whitespace-pre-wrap mb-3">
+            {content.length >= 300
+              ? `${content.slice(0, 300)}... \n\n >> 클릭해서 더보기`
+              : content}
+          </p>
           {false ? (
             <div className="flex min-h-full justify-center mb-4 overflow-clip">
               <img
@@ -49,11 +53,25 @@ export default function TweetItem({
             </div>
           ) : null}
         </Link>
-        <Link href={`/profile/${authorId}`} className={`w-full flex`}>
+        <Link href={`/tweets/${tweetId}`} className={`w-full flex`}>
           <div
             className={`w-full flex gap-1  ${
               authorId !== userId ? "justify-end" : "justify-start"
             }`}>
+            <div className="w-full flex items-center justify-center gap-2">
+              <svg
+                className="w-4 h-4 text-red-500"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                  fillRule="evenodd"
+                  d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                  clipRule="evenodd"></path>
+              </svg>
+              <span>마음에 들어요</span>
+              <span>{likessCount || 0}</span>
+            </div>
             <div className="w-full flex items-center justify-center gap-2">
               <svg
                 className="w-4 h-4"
@@ -69,20 +87,6 @@ export default function TweetItem({
               </svg>
               <span>코멘트</span>
               <span>{commentsCount || 0}</span>
-            </div>
-            <div className="w-full flex items-center justify-center gap-2">
-              <svg
-                className="w-4 h-4 text-red-500"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg">
-                <path
-                  fillRule="evenodd"
-                  d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                  clipRule="evenodd"></path>
-              </svg>
-              <span>마음에 들어요</span>
-              <span>{likessCount || 0}</span>
             </div>
             {userId === authorId ? (
               <div

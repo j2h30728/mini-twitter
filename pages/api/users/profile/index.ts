@@ -39,7 +39,6 @@ async function handler(
     return res.status(200).json({ success: true, profile });
 
   if (req.method === "PUT") {
-    console.log(profile.id, body);
     const updatedProfile = await db.user.update({
       where: {
         id: profile.id,
@@ -50,7 +49,6 @@ async function handler(
       },
       include: { profile: true },
     });
-    console.log(updatedProfile);
     return res.status(200).json({ success: true, updatedProfile });
   }
 

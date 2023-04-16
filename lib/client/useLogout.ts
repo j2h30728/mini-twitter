@@ -8,8 +8,8 @@ export default function useLogout() {
   const [mutation, { data: isLogout, error }] =
     useMutation<ResponseType>("/api/users/logout");
   useEffect(() => {
-    if (isLogout?.success) router.replace("/log-in");
-    if (!isLogout?.success && error) alert(error);
+    if (isLogout && !isLogout.success) alert(error);
+    if (isLogout && isLogout.success) router.replace("/log-in");
   }, [isLogout]);
 
   const handleLogout = () => {
