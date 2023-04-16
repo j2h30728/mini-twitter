@@ -9,6 +9,7 @@ import Input from "@/components/input";
 import useMutation from "@/lib/client/useMutation";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import Button from "@/components/button";
 
 interface EditProfile {
   name: string;
@@ -40,7 +41,9 @@ const Profile: NextPage<{ user: userProfile }> = ({ user }) => {
   }, [data]);
   return (
     <Layout title="회원정보수정" hasTabBar>
-      <form onSubmit={handleSubmit(handleEidt)}>
+      <form
+        onSubmit={handleSubmit(handleEidt)}
+        className="w-full p-11 mt-20 space-y-4">
         <Input
           name="name"
           label="이름"
@@ -51,11 +54,11 @@ const Profile: NextPage<{ user: userProfile }> = ({ user }) => {
         <Input
           name="bio"
           label="자기소개"
-          type="textarea"
+          kind="textarea"
           register={register("bio")}
           required={false}
         />
-        <button>회원정수정</button>
+        <Button text="회원정수정" large />
       </form>
     </Layout>
   );

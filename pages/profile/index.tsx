@@ -5,29 +5,25 @@ import db from "../../lib/server/db";
 import Layout from "../../components/layout";
 import { userProfile } from "@/types/users";
 import Link from "next/link";
+import ProfileForm from "../../components/profileForm";
 
 const Profile: NextPage<{ user: userProfile }> = ({ user }) => {
   return (
-    <Layout title="마이페이지" hasTabBar>
-      <Link href="/profile/edit">회원정보수정하기</Link>
-      <h1>{user.name}</h1>
-      <p>{user.email}</p>
-      <p>{user.profile?.bio}</p>
-      <hr />
-      <h2>작성한 트윗</h2>
-      <ul>
-        {user.tweets.map(tweet => (
-          <li key={tweet.id}>{tweet.text}</li>
-        ))}
-      </ul>
-      <hr />
-      <h2>좋아요 누른 트윗</h2>
-      <ul>
-        {user.likes.map(like => (
-          <li key={like.id}>{like.tweet.text}</li>
-        ))}
-      </ul>
-      <hr />
+    <Layout title="마이페이지" hasTabBar canGoBack>
+      <div className="flex flex-col space-y-4">
+        <Link
+          href="/profile/edit"
+          className="bg-primary p-2 rounded-md mt-5 self-end w-fit shadow">
+          내 정보 수정하기
+        </Link>
+        <ProfileForm
+          name={user.name}
+          email={user.email}
+          bio={user.profile?.bio}
+          createdTweets={user.tweets}
+          likedTweets={user.likes}
+        />
+      </div>
     </Layout>
   );
 };

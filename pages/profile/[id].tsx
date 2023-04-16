@@ -3,6 +3,7 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 import { userProfile } from "@/types/users";
 import { useEffect } from "react";
+import ProfileForm from "@/components/profileForm";
 
 interface resProfile {
   profile: userProfile;
@@ -22,26 +23,17 @@ export default function Profile() {
     if (user && !user.success) alert(error);
   }, [user]);
 
-  return !isLoading ? (
+  return !isLoading && user ? (
     <Layout title="마이페이지" hasTabBar canGoBack>
-      <h1>{user?.profile?.name}</h1>
-      <p>{user?.profile?.email}</p>
-      <p>{user?.profile?.profile?.bio}</p>
-      <hr />
-      <h2>작성한 트윗</h2>
-      <ul>
-        {user?.profile?.tweets.map(tweet => (
-          <li key={tweet.id}>{tweet.text}</li>
-        ))}
-      </ul>
-      <hr />
-      <h2>좋아요 누른 트윗</h2>
-      <ul>
-        {user?.profile?.likes.map(like => (
-          <li key={like.id}>{like.tweet.text}</li>
-        ))}
-      </ul>
-      <hr />
+      <div className="mt-4 space-y-4">
+        <ProfileForm
+          name={user?.profile?.name}
+          email={user?.profile?.email}
+          bio={user?.profile?.email}
+          createdTweets={user?.profile?.tweets}
+          likedTweets={user?.profile?.likes}
+        />
+      </div>
     </Layout>
   ) : (
     "Loaindg..."

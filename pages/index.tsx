@@ -8,11 +8,10 @@ import db from "../lib/server/db";
 import useUser from "@/lib/client/useUser";
 import Layout from "@/components/layout";
 import { TweetWithCount } from "@/types/tweet";
-import TweetItem from "@/components/tweet";
+import TweetItem from "@/components/tweetItem";
 import { withSsrSession } from "@/lib/server/withSession";
 import Input from "@/components/input";
 import Button from "@/components/button";
-import { cls } from "@/lib/client/utils";
 
 interface TweetRes {
   success: boolean;
@@ -63,12 +62,12 @@ const Home: NextPage = () => {
   return (
     <Layout symbol hasTabBar>
       <h2 className="text-3xl mt-10 mr-3 text-right">
-        어서오세요! <span className="text-5xl text-cupcake1">{user?.name}</span>
-        님
+        어서오세요!{" "}
+        <span className="text-5xl text-pointLight3">{user?.name}</span>님
       </h2>
       <button
         onClick={handleCreateTweetMode}
-        className="fixed flex flex-col items-center space-y-2 w-14 h-14 bottom-0 z-10 my-1 inset-x-1/2 -translate-x-1/2">
+        className="fixed flex flex-col items-center text-gray-700 space-y-2 w-14 h-14 bottom-0 z-10 my-1 inset-x-1/2 -translate-x-1/2">
         <div className="w-14 h-14 bg-base flex flex-col items-center justify-center space-y-1 ">
           <div className="w-10 h-10 bg-primary rounded-full flex justify-center items-center cursor-pointer">
             <svg

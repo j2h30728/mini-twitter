@@ -7,6 +7,7 @@ interface InputProps {
   register: UseFormRegisterReturn;
   type?: string;
   required: boolean;
+  placeholder?: string;
 }
 
 export default function Input({
@@ -16,6 +17,7 @@ export default function Input({
   register,
   type,
   required,
+  placeholder,
 }: InputProps) {
   return (
     <div className="h-full">
@@ -32,14 +34,16 @@ export default function Input({
             type={type}
             required={required}
             className="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-point focus:border-point"
+            placeholder={placeholder}
           />
         ) : (
           <textarea
             id={name}
             {...register}
-            className="mt-1 resize-none shadow-sm w-full h-full p-3 focus:ring-point rounded-md border-gray-300 focus:border-point"
+            className="appearance-none mt-1 resize-none  shadow-sm w-full h-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-point focus:border-point"
             rows={4}
             required
+            placeholder={placeholder}
           />
         )}
       </div>
