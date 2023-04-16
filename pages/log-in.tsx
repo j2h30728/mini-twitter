@@ -35,7 +35,7 @@ export default function login() {
   }, [data, router]);
   return (
     <Layout title="로그인">
-      <div className="h-screen p-11 mt-20 space-y-8">
+      <div className="max-h-fit w-full p-11 mt-20 space-y-8">
         <form onSubmit={handleSubmit(onValid)} className="w-full space-y-4">
           <Input
             label="이메일"

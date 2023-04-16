@@ -41,7 +41,7 @@ export default function signUp() {
 
   return (
     <Layout title="회원가입">
-      <div className="h-screen mt-20 p-11  space-y-5">
+      <div className="max-h-fit w-full mt-20 p-11  space-y-5">
         <form onSubmit={handleSubmit(onValid)} className="w-full space-y-4">
           <Input
             label="이름"

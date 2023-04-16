@@ -64,7 +64,7 @@ export default function Layout({
       </div>
       <div
         className={cls(
-          "h-screen pt-16 px-5 border-x-4 border-solid border-base bg-white overflow-scroll",
+          "h-screen w-full pt-16 px-5 border-x-4 border-solid border-base bg-white overflow-scroll",
           hasTabBar ? "pb-32" : ""
         )}>
         {children}

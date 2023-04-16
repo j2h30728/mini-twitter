@@ -141,7 +141,6 @@ const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
           </button>
         ) : null}
         <div className="flex w-full items-baseline gap-3">
-          {/* <div className="w-10 h-10 bg-base300 rounded-full"></div> */}
           <Link
             href={`/profile/${profile.id}`}
             className={cls(

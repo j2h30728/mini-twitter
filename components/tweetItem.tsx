@@ -4,7 +4,9 @@ interface tweetProps {
   tweetId: number;
   authorId: number;
   userId: number;
-  author: string;
+  authorName: string;
+  authoremail: string;
+  createdAt: Date;
   content: string;
   commentsCount: number;
   likessCount: number;
@@ -14,7 +16,9 @@ export default function TweetItem({
   tweetId,
   authorId,
   userId,
-  author,
+  authorName,
+  authoremail,
+  createdAt,
   content,
   commentsCount,
   likessCount,
@@ -27,8 +31,9 @@ export default function TweetItem({
           <Link
             href={`/profile/${authorId}`}
             className="font-bold text-primaryDark1 text-2xl">
-            {author}
+            {authorName}
           </Link>
+          <p className="font-semibold text-sm text-base2">{authoremail}</p>
         </div>
       ) : null}
       <div
@@ -36,6 +41,9 @@ export default function TweetItem({
           `flex flex-col w-5/6 bg-base1 px-5 py-3 rounded-xl shadow-xl`,
           authorId === userId ? "self-end" : "self-start"
         )}>
+        <span className="text-sm text-base2">
+          {createdAt.toString().substring(0, 10)}
+        </span>
         <Link
           href={`/tweets/${tweetId}`}
           className="w-full min-h-[100px] max-h-fit p-1 mb-3 mt-2 border-solid border-b-2 border-base100">

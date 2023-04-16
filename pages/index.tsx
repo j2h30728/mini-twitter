@@ -57,7 +57,7 @@ const Home: NextPage = () => {
   const handleCreateTweetMode = () => {
     setIsCreateMode(prev => !prev);
   };
-
+  console.log(tweets);
   return (
     <Layout symbol hasTabBar>
       <h2 className="text-3xl my-10 mr-3 text-right font-semibold">
@@ -126,7 +126,9 @@ const Home: NextPage = () => {
                   tweetId={tweet.id}
                   userId={user?.id}
                   authorId={tweet.userId}
-                  author={tweet.user?.name}
+                  authorName={tweet.user?.name}
+                  authoremail={tweet.user?.email}
+                  createdAt={tweet.createdAt}
                   content={tweet.text}
                   commentsCount={tweet._count?.comments}
                   likessCount={tweet._count?.likes}
