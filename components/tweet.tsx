@@ -88,7 +88,7 @@ export default function TweetItem({
           {userId === authorId ? (
             <div
               onClick={() => handleRemoveTweet(tweetId)}
-              className="self-end rounded-full hover:bg-point p-2 active:bg-pointFocus">
+              className="self-end rounded-full  hover:bg-cupcake1 p-2 active:bg-cupcake1Focus">
               <svg
                 className="w-4 h-4 cursor-pointer "
                 xmlns="http://www.w3.org/2000/svg"

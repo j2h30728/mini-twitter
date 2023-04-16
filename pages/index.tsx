@@ -58,20 +58,32 @@ const Home: NextPage = () => {
       </h2>
       <div onClick={handleCreateTweetMode}>트윗 하기</div>
       {isCreateMode ? (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity">
-          <div className="fixed inset-0 z-10 overflow-y-auto justify-center items-center">
-            <form
-              onSubmit={handleSubmit(onValid)}
-              className="flex min-h-40 w-40 items-end justify-center p-4 text-center sm:items-center sm:p-0 bg-base1">
-              <Input
-                label="트윗 추가 하기"
-                name="tweet"
-                type="textarea"
-                register={register("text")}
-                required
-              />
-              <button>트윗하기</button>
-            </form>
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity z-10">
+          <div className="flex min-h-full items-center justify-center p-4">
+            <div className="min-h-max min-w-max bg-base p-3 rounded-md">
+              <button
+                onClick={handleCreateTweetMode}
+                className="self-end rounded-full hover:bg-cupcake1 p-2 active:bg-cupcake1Focus">
+                <svg
+                  className="w-4 h-4 cursor-pointer "
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 384 512">
+                  <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+                </svg>
+              </button>
+              <form
+                onSubmit={handleSubmit(onValid)}
+                className="flex min-h-80 h-80 w-80 items-end justify-center text-center sm:items-center">
+                <Input
+                  label="트윗 추가 하기"
+                  name="tweet"
+                  kind="textarea"
+                  register={register("text")}
+                  required
+                />
+                <button>트윗하기</button>
+              </form>
+            </div>
           </div>
         </div>
       ) : null}

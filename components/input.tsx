@@ -5,7 +5,7 @@ interface InputProps {
   name: string;
   kind?: "text" | "textarea";
   register: UseFormRegisterReturn;
-  type: string;
+  type?: string;
   required: boolean;
 }
 
@@ -37,7 +37,7 @@ export default function Input({
           <textarea
             id={name}
             {...register}
-            className="mt-1 shadow-sm w-full focus:ring-point rounded-md border-gray-300 focus:border-point "
+            className="mt-1 shadow-sm w-full h-full focus:ring-point rounded-md border-gray-300 focus:border-point"
             rows={4}
           />
         )}
