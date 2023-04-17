@@ -8,6 +8,7 @@ import ProfileForm from "@/components/profileForm";
 interface resProfile {
   profile: userProfile;
   success: boolean;
+  message: string;
 }
 
 export default function Profile() {
@@ -20,7 +21,7 @@ export default function Profile() {
     router.query.id ? `/api/users/profile/${router.query.id}` : null
   );
   useEffect(() => {
-    if (user && !user.success) alert(error);
+    if (user && !user.success) alert(user.message);
   }, [user]);
 
   return !isLoading && user ? (
@@ -36,9 +37,15 @@ export default function Profile() {
       </div>
     </Layout>
   ) : (
+<<<<<<< HEAD
        <Layout title="마이페이지" hasTabBar canGoBack>
       <div className="flex justify-center items-center">
                <p>Loading...</p>
+=======
+    <Layout title="마이페이지" hasTabBar canGoBack>
+      <div className="flex justify-center items-center">
+        <p>Loading...</p>
+>>>>>>> 128deef194922ac618e1715535707a60d38f996d
       </div>
     </Layout>
   );

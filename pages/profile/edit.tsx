@@ -17,6 +17,7 @@ interface EditProfile {
 }
 interface EidtProfileResponse {
   success: boolean;
+  message: string;
   updateProfile: userProfile;
 }
 
@@ -33,13 +34,16 @@ const Profile: NextPage<{ user: userProfile }> = ({ user }) => {
       editProfile({ data: eidtData, method: "PUT" });
   };
   useEffect(() => {
-    if (data && data.success) router.push("/profile");
-    if (!data?.success && editError) {
-      alert(editError);
+    if (data) {
+      if (data.success) {
+        router.push("/profile");
+      } else {
+        alert(data.message);
+      }
     }
   }, [data]);
   return (
-    <Layout title="회원정보수정" hasTabBar>
+    <Layout title="회원정보수정" hasTabBar canGoBack>
       <form
         onSubmit={handleSubmit(handleEidt)}
         className="w-full p-11 mt-20 space-y-4">

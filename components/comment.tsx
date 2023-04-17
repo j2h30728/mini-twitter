@@ -24,7 +24,7 @@ export default function CommentItem({
     <div className="w-full flex flex-col justify-center border rounded-lg pt-4">
       <div className="flex justify-between">
         <Link
-          href={`/profile/${authorId}`}
+          href={authorId === userId ? "/profile" : `/profile/${authorId}`}
           className={cls(
             "font-semibold",
             authorId === userId ? "text-pointFocus" : "text-primaryDark1"

@@ -57,7 +57,6 @@ const Home: NextPage = () => {
   const handleCreateTweetMode = () => {
     setIsCreateMode(prev => !prev);
   };
-  console.log(tweets);
   return (
     <Layout symbol hasTabBar>
       <h2 className="text-3xl my-10 mr-3 text-right font-semibold">

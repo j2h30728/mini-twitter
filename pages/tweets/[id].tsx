@@ -45,8 +45,8 @@ const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
   );
   //error
   useEffect(() => {
-    if (tweet && !tweet.success) alert(tweetDetailError);
-    if (tweetDetail && !tweetDetail.success) alert(tweetError);
+    if (tweet && !tweet.success) alert(tweet.message);
+    if (tweetDetail && !tweetDetail.success) alert(tweetDetail.message);
   }, [tweetDetailError, tweetError]);
 
   //tweet - delete
@@ -93,6 +93,7 @@ const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
   ] = useMutation<ResponseType>(`/api/tweets/${router.query.id}/comment`);
 
   const onValid = (comment: CommetForm) => {
+    if (comment.text === "") return alert("입력부탁드립니다.");
     if (tweetCommentLoading) return;
     mutationComment({ data: comment, method: "POST" });
     reset();
@@ -121,7 +122,10 @@ const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
     }
   };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 128deef194922ac618e1715535707a60d38f996d
   return tweetDetail && profile ? (
     <Layout canGoBack hasTabBar symbol>
       <div
@@ -244,7 +248,11 @@ const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
   ) : (
     <Layout title="마이페이지" hasTabBar canGoBack>
       <div className="flex justify-center items-center">
+<<<<<<< HEAD
         <p className="flex justify-center items-center ">Loading...</p>
+=======
+        <p>Loading...</p>
+>>>>>>> 128deef194922ac618e1715535707a60d38f996d
       </div>
     </Layout>
   );
