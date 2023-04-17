@@ -43,7 +43,7 @@ const Profile: NextPage<{ user: userProfile }> = ({ user }) => {
     }
   }, [data]);
   return (
-    <Layout title="회원정보수정" hasTabBar>
+    <Layout title="회원정보수정" hasTabBar canGoBack>
       <form
         onSubmit={handleSubmit(handleEidt)}
         className="w-full p-11 mt-20 space-y-4">
