@@ -1,10 +1,19 @@
 # mini-Twitter
 
+[codesandbox Link](https://codesandbox.io/p/github/j2h30728/mini-twitter/main?workspaceId=d45c646e-d306-48f3-8d05-9e64edf8f062&file=%2FREADME.md)
+
 - NextJS, Prisma, Tailwind, API Routes 그리고 SWR 를 활용하여 아래 페이지를 완성합니다.
-- `/` : 로그인 여부를 확인하여 로그인이 되어있다면 홈페이지를 그렇지 않다면 계정 생성 / 로그인 페이지로 이동하세요.
+- `/` :
+  - 로그인 여부를 확인하여 로그인이 되어있다면 홈페이지를 그렇지 않다면 계정 생성 / 로그인 페이지로 이동하세요.
+  - 트윗 추가, 삭제를 할 수 있습니다.
+  - 트윗을 클릭하면 트윗상세 페이지 이동, 계정을 클릭하면 해당 유처의 프로필 페이지로 이동합니다.
 - `/create-account` : 계정을 생성하는 페이지입니다.
 - `/log-in` : 로그인을 진행하는 페이지입니다.
 - `/tweet/[id]` : 트윗의 상세 정보를 보는 페이지 입니다.
+- `/profile` : 로그인한 유저의 정보를 보는 페이지 입니다.
+  - 이름, 이메일, 자기소개, 작성한 트윗, 좋아요를 누른 트윗을 확인 가능합니다.
+- `/profile/[id]` : 타유저의 프로필 정보를 보는 페이지 입니다.
+- `/profile/edit` : 내 정보 수정하는 페이지 입니다.
 
 ### `/`:
 
@@ -24,13 +33,3 @@
 챌린지 blueprint에는 SQLite을 기반으로 한 Prisma가 설정되어있습니다.
 prisma.schema파일을 변경했다면 npm run db-sync를 실행하세요.
 SWR와 tailwind도 챌린지 blueprint에 설정되어 있습니다.
-
-### 환경설정
-
-- 코딩 챌린지를 완료한 후. https://codesandbox.io/dashboard 으로 이동하여.
-- 'Create Sandbox' > Import Project 한 후에 프로젝트의 깃헙 URL 을 복사. 붙여넣기 하면 됩니다
-
-## 메모:
-
-로그인한 사용자 자신의 프로필 정보 조회 할수 있음
-코드 재사용성이 높아지고 기능 통합되어 관리하기 쉬움
