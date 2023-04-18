@@ -22,10 +22,10 @@ export default function login() {
   const onValid = (valiform: AccountForm) => {
     if (loading) return;
     mutation({ data: valiform, method: "POST" });
-    reset();
   };
   useEffect(() => {
     if (data) {
+      reset();
       if (data.success) {
         router.push("/");
       } else {
@@ -51,7 +51,11 @@ export default function login() {
             type="password"
             required
           />
-          <Button large text="로그인" />
+          <Button
+            large
+            text={loading && !data ? "로그인 진행중.." : "로그인"}
+            disabled={loading && !data ? true : false}
+          />
         </form>
         <div className="mt-5 flex gap-4">
           <span>처음 이신가요?</span>

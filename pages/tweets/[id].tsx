@@ -143,7 +143,7 @@ const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
         ) : null}
         <div className="flex w-full items-baseline gap-3">
           <Link
-            href={`/profile/${profile.id}`}
+            href={`/profile/${tweetDetail.tweet.userId}`}
             className={cls(
               "text-3xl font-bold",
               profile?.id === tweetDetail?.tweet.userId

@@ -1,6 +1,7 @@
 import { cls } from "@/lib/client/utils";
 import { LikeWithTweets } from "@/types/users";
 import { Tweet } from "@prisma/client";
+import Link from "next/link";
 import { useState } from "react";
 
 interface ProfileProps {
@@ -64,25 +65,31 @@ export default function ProfileForm({
       </div>
       <div>
         {tweetMode === "created" ? (
-          <ul className="flex flex-col space-y-1">
+          <div className="flex flex-col space-y-1">
             {createdTweets.map(tweet => (
-              <li key={tweet.id} className="bg-base1 rounded-md p-2">
+              <Link
+                href={`/tweets/${tweet.id}`}
+                key={tweet.id}
+                className="bg-base1 rounded-md p-2">
                 {tweet.text.length >= 100
                   ? `${tweet.text.slice(0, 100)}...`
                   : tweet.text}
-              </li>
+              </Link>
             ))}
-          </ul>
+          </div>
         ) : (
-          <ul className="flex flex-col space-y-1">
+          <div className="flex flex-col space-y-1">
             {likedTweets.map(like => (
-              <li key={like.id} className="bg-base1 rounded-md p-2">
+              <Link
+                href={`/tweets/${like.tweetId}`}
+                key={like.id}
+                className="bg-base1 rounded-md p-2">
                 {like.tweet.text.length >= 100
                   ? `${like.tweet.text.slice(0, 100)}...`
                   : like.tweet.text}
-              </li>
+              </Link>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </>
