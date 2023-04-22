@@ -164,7 +164,7 @@ export const getServerSideProps = withSsrSession(async function ({
   const profile = await db.user.findUnique({
     where: { id: req?.session.user?.id },
   });
-  const tweets = await db.tweet.findMany({
+    const tweets = await db.tweet.findMany({
     include: {
       user: {
         select: {

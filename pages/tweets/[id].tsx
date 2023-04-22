@@ -7,9 +7,9 @@ import { useForm } from "react-hook-form";
 import { ResponseType } from "@/lib/server/withHandler";
 import { useEffect } from "react";
 import Layout from "@/components/layout";
-import { TweetDetailResponse } from "@/types/tweet";
+import { TweetDetailResponse, ServerTweetDetail } from "@/types/tweet";
 import CommentItem from "@/components/comment";
-import { NextPage, NextPageContext } from "next";
+import { GetServerSidePropsContext, NextPage } from "next";
 import { withSsrSession } from "@/lib/server/withSession";
 import db from "@/lib/server/db";
 import Link from "next/link";
@@ -30,7 +30,7 @@ interface CommentsResponse extends ResponseType {
   comments: Comment[];
 }
 
-const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
+const DeatailTweet: NextPage<{ profile: User }> = ({ profile }) => {
   const router = useRouter();
   const [
     tweetMutate,
@@ -122,7 +122,7 @@ const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
     }
   };
 
-  return tweetDetail && profile ? (
+  return tweetDetail ? (
     <Layout canGoBack hasTabBar symbol>
       <div
         className={cls(
@@ -241,38 +241,55 @@ const Tweet: NextPage<{ profile: User }> = ({ profile }) => {
           ))}
       </div>
     </Layout>
-  ) : (
-    <Layout title="마이페이지" hasTabBar canGoBack>
-      <div className="flex justify-center items-center">
-        <p>Loading...</p>
-      </div>
-    </Layout>
-  );
+  ) : null;
 };
 
-const Page: NextPage<{ profile: User }> = ({ profile }) => {
+const Page: NextPage<{ profile: User; tweet: ServerTweetDetail }> = ({
+  profile,
+  tweet,
+}) => {
+  console.log(tweet);
   return (
     <SWRConfig
       value={{
         fallback: {
           "/api/users/profile": { success: true, profile },
+          [`/api/tweets/${tweet.id}`]: { success: true, tweet },
         },
       }}>
-      <Tweet profile={profile} />
+      <DeatailTweet profile={profile} />
     </SWRConfig>
   );
 };
 
-export const getServerSideProps = withSsrSession(async function ({
-  req,
-}: NextPageContext) {
+export const getServerSideProps = withSsrSession(async function (
+  context: GetServerSidePropsContext
+) {
   const profile = await db.user.findUnique({
-    where: { id: req?.session.user?.id },
+    where: { id: context.req?.session.user?.id },
   });
-
+  const tweet = await db.tweet.findUnique({
+    where: { id: Number(context.query.id) },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+      _count: {
+        select: {
+          likes: true,
+          comments: true,
+        },
+      },
+    },
+  });
   return {
     props: {
       profile: JSON.parse(JSON.stringify(profile)),
+      tweet: JSON.parse(JSON.stringify(tweet)),
     },
   };
 });

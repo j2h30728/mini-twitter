@@ -49,7 +49,7 @@ export default function ProfileForm({
               ? "text-pointLight3 underline decoration-2 "
               : "text-primaryDark1"
           )}>
-          작성한 트윗 <span>({createdTweets.length})</span>
+          작성한 트윗 <span>({createdTweets?.length})</span>
         </button>
 
         <button
@@ -60,24 +60,25 @@ export default function ProfileForm({
               ? "text-pointLight3 underline decoration-2 "
               : "text-primaryDark1"
           )}>
-          마음 찍은 트윗 <span>({likedTweets.length})</span>
+          마음 찍은 트윗 <span>({likedTweets?.length})</span>
         </button>
       </div>
       <div>
         {tweetMode === "created" ? (
           <div className="flex flex-col space-y-1">
-            {createdTweets.map(tweet => (
+            {createdTweets?.map(tweet => (
               <Link
                 href={`/tweets/${tweet.id}`}
                 key={tweet.id}
                 className="bg-base1 rounded-md p-2">
-                {tweet.text.length >= 100
+                {tweet && tweet.text.length >= 100
                   ? `${tweet.text.slice(0, 100)}...`
                   : tweet.text}
               </Link>
             ))}
           </div>
-        ) : (
+        ) : null}
+        {tweetMode === "liked" ? (
           <div className="flex flex-col space-y-1">
             {likedTweets.map(like => (
               <Link
@@ -90,7 +91,7 @@ export default function ProfileForm({
               </Link>
             ))}
           </div>
-        )}
+        ) : null}
       </div>
     </>
   );

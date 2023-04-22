@@ -7,20 +7,21 @@ export interface TweetWithCount extends Tweet {
   };
   user: User;
 }
+export interface ServerTweetDetail {
+  id: number;
+  text: string;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: number;
+  user: User;
+  _count: {
+    comments: number;
+    likes: number;
+  };
+}
 
 export interface TweetDetailResponse {
-  tweet: {
-    id: number;
-    text: string;
-    createdAt: Date;
-    updatedAt: Date;
-    userId: number;
-    user: User;
-    _count: {
-      comments: number;
-      likes: number;
-    };
-  };
+  tweet: ServerTweetDetail;
   success: boolean;
   isLiked: boolean;
   message: string;

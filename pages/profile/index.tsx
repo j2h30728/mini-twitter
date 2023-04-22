@@ -1,5 +1,5 @@
 import { withSsrSession } from "@/lib/server/withSession";
-import { NextPage, NextPageContext } from "next";
+import { GetServerSidePropsContext, NextPage } from "next";
 import { SWRConfig } from "swr";
 import db from "../../lib/server/db";
 import Layout from "../../components/layout";
@@ -41,11 +41,11 @@ const Page: NextPage<{ user: userProfile }> = ({ user }) => {
   );
 };
 
-export const getServerSideProps = withSsrSession(async function ({
-  req,
-}: NextPageContext) {
+export const getServerSideProps = withSsrSession(async function (
+  context: GetServerSidePropsContext
+) {
   const user = await db.user.findUnique({
-    where: { id: req?.session.user?.id },
+    where: { id: context.req?.session.user?.id },
     include: {
       tweets: true,
       likes: {
